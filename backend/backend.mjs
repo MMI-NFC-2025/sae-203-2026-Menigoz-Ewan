@@ -2,6 +2,7 @@ import PocketBase from 'pocketbase';
 
 export const pb = new PocketBase('http://127.0.0.1:8090');
 
+// Partie 2
 export async function getArtistesByDate() {
     return await pb.collection('artistes').getFullList({
         sort: 'date_passage',
@@ -54,4 +55,21 @@ export async function addOrUpdate(collection, data) {
     } else {
         return await pb.collection(collection).create(data);
     }
+}
+
+// Travail supplémentaire
+export async function login(email, password) {
+    try {
+        const authData = await pb.collection('users').authWithPassword(email, password);
+        console.log("Connecté :", pb.authStore.isValid);
+        console.log("Utilisateur :", pb.authStore.record);
+        return { success: true, record: pb.authStore.record };
+    } catch (e) {
+        console.error("Erreur de connexion :", e.message);
+        return { success: false, message: e.message };
+    }
+}
+
+export function logout() {
+    pb.authStore.clear();
 }
