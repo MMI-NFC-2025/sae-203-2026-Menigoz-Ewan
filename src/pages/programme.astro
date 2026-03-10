@@ -1,0 +1,504 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PocketBase from "pocketbase";
+
+const pb = new PocketBase("http://127.0.0.1:8090");
+
+const records = await pb.collection("artistes").getFullList({
+    sort: "date_passage",
+    expand: "scene_id",
+});
+
+const formatterJour = new Intl.DateTimeFormat("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+});
+const formatterHeure = new Intl.DateTimeFormat("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
+});
+
+const getColorByGenre = (genre: string | string[]) => {
+    const g = String(genre || "").toLowerCase();
+
+    if (g.includes("jazz")) return "bg-[var(--color-secondary)]";
+    if (g.includes("fanfare")) return "bg-[var(--color-primary)]";
+    return "bg-[var(--color-accent)]";
+};
+
+const concerts = records.map((record) => {
+    const dateObj = new Date(record.date_passage);
+    const jourBrut = formatterJour.format(dateObj);
+    const jourCapitalise = jourBrut.charAt(0).toUpperCase() + jourBrut.slice(1);
+
+    const genreAffiche = Array.isArray(record.genre)
+        ? record.genre.join(", ")
+        : record.genre || "Non défini";
+
+    return {
+        id: record.id,
+        jour: jourCapitalise,
+        heure: formatterHeure.format(dateObj),
+        artiste: record.nom,
+        scene: record.expand?.scene_id?.nom || "Scène à confirmer",
+        genre: genreAffiche,
+        couleurGenre: getColorByGenre(record.genre),
+    };
+});
+
+const joursUniques = [...new Set(concerts.map((c) => c.jour))];
+---
+
+<Layout title="Programme - La Fanfa'Comtoise">
+    <main class="w-full bg-[var(--color-bg-light)] font-sans">
+        <section
+            class="relative w-full h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden"
+        >
+            <img
+                src="/hero_program.avif"
+                alt="Programme du festival"
+                class="absolute inset-0 w-full h-full object-cover z-0"
+            />
+            <div class="absolute inset-0 bg-black/40 z-10"></div>
+
+            <div
+                class="relative z-20 flex flex-col items-center text-center px-6 font-title"
+            >
+                <div
+                    class="bg-white text-black px-8 py-3 rounded-full flex items-center gap-3 font-bold text-base mb-6 shadow-lg"
+                >
+                    <img
+                        src="/vector_dates_program.svg"
+                        alt="Calendrier"
+                        class="w-5 h-5"
+                    />
+                    <span>27-29 juin 2025</span>
+                </div>
+                <h1
+                    class="text-5xl md:text-[4rem] text-white font-black mb-4 drop-shadow-lg tracking-tighter uppercase"
+                >
+                    Programme
+                </h1>
+                <p
+                    class="text-xl text-white/90 font-medium drop-shadow-md max-w-2xl"
+                >
+                    3 jours de concerts gratuits dans le centre-ville de
+                    Montbéliard
+                </p>
+            </div>
+        </section>
+
+        <section class="max-w-[1100px] mx-auto mt-16 relative z-30 px-6">
+            <div
+                class="bg-white rounded-[20px] shadow-xl border border-gray-100 p-8"
+            >
+                <div
+                    class="flex items-center gap-3 mb-8 border-b border-gray-100 pb-4"
+                >
+                    <img
+                        src="/vector_filter_program.svg"
+                        alt="Recherche"
+                        class="w-6 h-6"
+                    />
+                    <h2
+                        class="text-2xl font-black text-black font-title uppercase"
+                    >
+                        Trouvez votre concert
+                    </h2>
+                </div>
+
+                <form
+                    id="search-form"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-end"
+                >
+                    <div class="flex flex-col gap-2">
+                        <label
+                            for="search-artist"
+                            class="text-sm font-bold text-gray-700"
+                            >Artiste ou mot-clé</label
+                        >
+                        <input
+                            type="text"
+                            id="search-artist"
+                            placeholder="Lazy Birds, Jazz..."
+                            class="w-full px-5 py-3.5 bg-[var(--color-bg-light)] border border-gray-200 rounded-xl focus:outline-none focus:border-[var(--color-primary)] transition-colors text-[1.05rem]"
+                        />
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label
+                            for="filter-day"
+                            class="text-sm font-bold text-gray-700">Jour</label
+                        >
+                        <select
+                            id="filter-day"
+                            class="w-full px-5 py-3.5 bg-[var(--color-bg-light)] border border-gray-200 rounded-xl focus:outline-none focus:border-[var(--color-primary)] transition-colors appearance-none font-medium text-gray-700 text-[1.05rem]"
+                        >
+                            <option value="">Tous les jours</option>
+                            <option value="vendredi">Vendredi</option>
+                            <option value="samedi">Samedi</option>
+                            <option value="dimanche">Dimanche</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label
+                            for="filter-genre"
+                            class="text-sm font-bold text-gray-700">Genre</label
+                        >
+                        <select
+                            id="filter-genre"
+                            class="w-full px-5 py-3.5 bg-[var(--color-bg-light)] border border-gray-200 rounded-xl focus:outline-none focus:border-[var(--color-primary)] transition-colors appearance-none font-medium text-gray-700 text-[1.05rem]"
+                        >
+                            <option value="">Tous les genres</option>
+                            <option value="jazz">Jazz</option>
+                            <option value="fanfare">Fanfare</option>
+                            <option value="rue">Musique de rue</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label
+                            for="filter-scene"
+                            class="text-sm font-bold text-gray-700">Scène</label
+                        >
+                        <select
+                            id="filter-scene"
+                            class="w-full px-5 py-3.5 bg-[var(--color-bg-light)] border border-gray-200 rounded-xl focus:outline-none focus:border-[var(--color-primary)] transition-colors appearance-none font-medium text-gray-700 text-[1.05rem]"
+                        >
+                            <option value="">Toutes les scènes</option>
+                            <option value="saint-martin"
+                                >Place Saint-Martin</option
+                            >
+                            <option value="halles">Scène des Halles</option>
+                            <option value="parc">Scène du Parc</option>
+                        </select>
+                    </div>
+
+                    <div
+                        class="lg:col-span-4 flex flex-col md:flex-row items-stretch justify-between gap-4 mt-6"
+                    >
+                        <button
+                            type="reset"
+                            class="w-full md:flex-1 px-6 py-4 bg-[var(--color-bg-warm)] text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 whitespace-nowrap text-lg"
+                        >
+                            <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                                ><path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                ></path></svg
+                            >
+                            Réinitialiser
+                        </button>
+                        <button
+                            type="submit"
+                            class="w-full md:flex-1 px-6 py-4 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-md whitespace-nowrap text-lg"
+                        >
+                            <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                                ><path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                ></path></svg
+                            >
+                            Rechercher
+                        </button>
+                        <a
+                            href="/programme.pdf"
+                            target="_blank"
+                            class="w-full md:flex-1 px-6 py-4 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:brightness-110 transition-colors flex items-center justify-center gap-2 shadow-md whitespace-nowrap text-lg"
+                        >
+                            <img
+                                src="/vector_download_program.svg"
+                                alt="Télécharger"
+                                class="w-5 h-5 brightness-0 invert"
+                            />
+                            Programme PDF
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="max-w-[1100px] mx-auto my-24 px-6">
+            <div
+                id="no-result-message"
+                class="hidden text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100"
+            >
+                <p class="text-xl text-gray-600 font-medium">
+                    Aucun concert ne correspond à votre recherche.
+                </p>
+            </div>
+
+            {
+                joursUniques.map((jour) => (
+                    <div
+                        class="mb-24 day-section"
+                        data-day={jour.toLowerCase()}
+                    >
+                        <div class="flex items-center gap-4 mt-16 mb-12 border-b-2 border-[var(--color-primary)] pb-4">
+                            <img
+                                src="/vector_day_icon_program.svg"
+                                alt="Jour"
+                                class="w-8 h-8"
+                            />
+                            <h2 class="text-3xl font-black text-black font-title uppercase tracking-tight">
+                                {jour}
+                            </h2>
+                        </div>
+
+                        <div class="flex flex-col gap-6">
+                            {concerts
+                                .filter((c) => c.jour === jour)
+                                .map((concert) => (
+                                    <article
+                                        class="concert-card bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center gap-6 hover:shadow-md transition-shadow"
+                                        data-artist={concert.artiste.toLowerCase()}
+                                        data-scene={concert.scene.toLowerCase()}
+                                        data-genre={concert.genre.toLowerCase()}
+                                    >
+                                        <div class="flex items-center gap-3 md:w-48 shrink-0">
+                                            <div class="w-14 h-14 rounded-full bg-[var(--color-bg-warm)] flex items-center justify-center text-[var(--color-primary)]">
+                                                <img
+                                                    src="/vector_clock_program.svg"
+                                                    alt="Heure"
+                                                    class="w-7 h-7"
+                                                />
+                                            </div>
+                                            <span class="text-3xl font-black font-title text-black">
+                                                {concert.heure}
+                                            </span>
+                                        </div>
+
+                                        <div class="flex-grow">
+                                            <h3 class="text-2xl font-bold text-black mb-2 font-title">
+                                                {concert.artiste}
+                                            </h3>
+                                            <div class="flex flex-wrap items-center gap-4 text-gray-600 font-medium">
+                                                <span class="flex items-center gap-2 text-[1.05rem]">
+                                                    <img
+                                                        src="/vector_location_program.svg"
+                                                        alt="Lieu"
+                                                        class="w-5 h-5"
+                                                    />
+                                                    {concert.scene}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="shrink-0 mt-4 md:mt-0">
+                                            <span
+                                                class={`inline-block px-6 py-2.5 rounded-full text-white text-[0.95rem] font-bold tracking-wider uppercase ${concert.couleurGenre}`}
+                                            >
+                                                {concert.genre}
+                                            </span>
+                                        </div>
+                                    </article>
+                                ))}
+                        </div>
+                    </div>
+                ))
+            }
+        </section>
+
+        <section class="bg-[var(--color-bg-warm)] py-20 px-6 mt-12">
+            <div class="max-w-[1100px] mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div
+                        class="bg-white p-8 rounded-2xl text-center shadow-sm border border-gray-100 flex flex-col items-center gap-6"
+                    >
+                        <div
+                            class="w-24 h-24 bg-[var(--color-primary)] rounded-full flex items-center justify-center shrink-0 shadow-inner"
+                        >
+                            <img
+                                src="/vector_free_program.svg"
+                                alt="Gratuit"
+                                class="w-12 h-12 brightness-0 invert"
+                            />
+                        </div>
+                        <div>
+                            <h3
+                                class="text-2xl font-black text-black font-title mb-2"
+                            >
+                                Entrée gratuite
+                            </h3>
+                            <p class="text-gray-600 font-medium text-[1.05rem]">
+                                Tous les concerts sont en accès libre
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white p-8 rounded-2xl text-center shadow-sm border border-gray-100 flex flex-col items-center gap-6"
+                    >
+                        <div
+                            class="w-24 h-24 bg-[var(--color-secondary)] rounded-full flex items-center justify-center shrink-0 shadow-inner"
+                        >
+                            <img
+                                src="/vector_plate_program.svg"
+                                alt="Restauration"
+                                class="w-12 h-12 brightness-0 invert"
+                            />
+                        </div>
+                        <div>
+                            <h3
+                                class="text-2xl font-black text-black font-title mb-2"
+                            >
+                                Restauration
+                            </h3>
+                            <p class="text-gray-600 font-medium text-[1.05rem]">
+                                Stands locaux et bio sur place
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white p-8 rounded-2xl text-center shadow-sm border border-gray-100 flex flex-col items-center gap-6"
+                    >
+                        <div
+                            class="w-24 h-24 bg-[var(--color-accent)] rounded-full flex items-center justify-center shrink-0 shadow-inner"
+                        >
+                            <img
+                                src="/vector_pmr_program.svg"
+                                alt="Accessibilité"
+                                class="w-12 h-12 brightness-0 invert"
+                            />
+                        </div>
+                        <div>
+                            <h3
+                                class="text-2xl font-black text-black font-title mb-2"
+                            >
+                                Accessibilité
+                            </h3>
+                            <p class="text-gray-600 font-medium text-[1.05rem]">
+                                Toutes les scènes sont accessibles PMR
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a
+                        href="/infos"
+                        class="inline-block px-10 py-4 bg-[var(--color-primary)] text-white font-black font-title uppercase tracking-wider rounded-full hover:brightness-110 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 whitespace-nowrap"
+                    >
+                        Voir toutes les infos pratiques
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+</Layout>
+
+<script>
+    const form = document.getElementById("search-form");
+    const concerts = document.querySelectorAll(".concert-card");
+    const daySections = document.querySelectorAll(".day-section");
+    const noResultMessage = document.getElementById("no-result-message");
+
+    if (form) {
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const searchArtist = (
+                document.getElementById("search-artist") as HTMLInputElement
+            ).value.toLowerCase();
+            const searchDay = (
+                document.getElementById("filter-day") as HTMLSelectElement
+            ).value.toLowerCase();
+            const searchGenre = (
+                document.getElementById("filter-genre") as HTMLSelectElement
+            ).value.toLowerCase();
+            const searchScene = (
+                document.getElementById("filter-scene") as HTMLSelectElement
+            ).value.toLowerCase();
+
+            let visibleCount = 0;
+
+            concerts.forEach((card) => {
+                const element = card as HTMLElement;
+                const artist = element.dataset.artist || "";
+                const genre = element.dataset.genre || "";
+                const scene = element.dataset.scene || "";
+                const cardDay =
+                    element.closest(".day-section")?.getAttribute("data-day") ||
+                    "";
+
+                const matchArtist =
+                    artist.includes(searchArtist) ||
+                    genre.includes(searchArtist);
+                const matchDay =
+                    searchDay === "" || cardDay.includes(searchDay);
+                const matchGenre =
+                    searchGenre === "" || genre.includes(searchGenre);
+                const matchScene =
+                    searchScene === "" || scene.includes(searchScene);
+
+                if (matchArtist && matchDay && matchGenre && matchScene) {
+                    element.style.display = "flex";
+                    visibleCount++;
+                } else {
+                    element.style.display = "none";
+                }
+            });
+
+            daySections.forEach((section) => {
+                const element = section as HTMLElement;
+                const visibleCards = element.querySelectorAll(
+                    '.concert-card[style="display: flex;"]',
+                );
+                const visibleCardsWithoutStyle = element.querySelectorAll(
+                    '.concert-card:not([style*="display: none"])',
+                );
+
+                if (
+                    visibleCards.length === 0 &&
+                    visibleCardsWithoutStyle.length === 0
+                ) {
+                    element.style.display = "none";
+                } else {
+                    element.style.display = "block";
+                }
+            });
+
+            if (noResultMessage) {
+                if (visibleCount === 0) {
+                    noResultMessage.classList.remove("hidden");
+                } else {
+                    noResultMessage.classList.add("hidden");
+                }
+            }
+        });
+
+        form.addEventListener("reset", () => {
+            setTimeout(() => {
+                concerts.forEach((card) => {
+                    (card as HTMLElement).style.display = "flex";
+                    (card as HTMLElement).removeAttribute("style");
+                });
+                daySections.forEach((section) => {
+                    (section as HTMLElement).style.display = "block";
+                    (section as HTMLElement).removeAttribute("style");
+                });
+                if (noResultMessage) {
+                    noResultMessage.classList.add("hidden");
+                }
+            }, 10);
+        });
+    }
+</script>
