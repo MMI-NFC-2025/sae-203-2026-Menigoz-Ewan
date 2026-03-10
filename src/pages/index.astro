@@ -2,345 +2,209 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout>
-	<main class="main">
-		<section class="hero">
+<Layout title="La Fanfa'Comtoise - Accueil">
+	<main class="w-full">
+		<section
+			class="relative w-full h-[80vh] min-h-[500px] flex items-center justify-center overflow-hidden"
+		>
 			<img
 				src="/hero_homepage.avif"
 				alt="Hero du site"
-				class="hero__bg-image"
+				class="absolute inset-0 w-full h-full object-cover z-0"
 			/>
+			<div class="absolute inset-0 bg-black/30 z-10"></div>
 
-			<div class="hero__content">
-				<h1 class="hero__title">
-					JAZZ, FANFARES & MUSIQUES<br />DE RUES
+			<div
+				class="relative z-20 flex flex-col items-center gap-5 text-center px-6 w-full font-title"
+			>
+				<h1
+					class="text-white text-4xl md:text-[4rem] font-black leading-[1.1] drop-shadow-2xl tracking-tight"
+				>
+					JAZZ, FANFARES & MUSIQUES<br class="hidden md:block" /> DE RUES
 				</h1>
 
-				<div class="hero__infos">
-					<div class="hero__info-item">
-						<img src="/vector_date_hero_homepage.svg" alt="date" />
+				<div class="flex flex-wrap gap-4 justify-center font-sans">
+					<div
+						class="bg-white text-black px-6 py-2.5 rounded-full flex items-center gap-2.5 font-bold text-sm md:text-base shadow-lg"
+					>
+						<img
+							src="/vector_date_hero_homepage.svg"
+							alt="date"
+							class="w-5 h-5"
+						/>
 						<span>27-29 juin 2025</span>
 					</div>
-					<div class="hero__info-item">
+					<div
+						class="bg-white text-black px-6 py-2.5 rounded-full flex items-center gap-2.5 font-bold text-sm md:text-base shadow-lg"
+					>
 						<img
 							src="/vector_location_hero_homepage.svg"
 							alt="lieu"
+							class="w-5 h-5"
 						/>
 						<span>Montbéliard</span>
 					</div>
 				</div>
 
-				<div class="hero__buttons">
-					<a href="/programme" class="hero__btn hero__btn--primary">
+				<div class="flex flex-wrap gap-4 justify-center mt-4 font-sans">
+					<a
+						href="/programme"
+						class="bg-[var(--color-primary)] text-white px-7 py-3 rounded-full flex items-center gap-2.5 font-bold text-base shadow-lg hover:-translate-y-1 transition-all"
+					>
 						<img
 							src="/vector_discover_hero_homepage.svg"
 							alt="musique"
+							class="w-5 h-5 brightness-0 invert"
 						/> Découvrir le programme
 					</a>
 					<a
 						href="#billetterie"
-						class="hero__btn hero__btn--secondary"
+						class="bg-[var(--color-secondary)] text-black px-7 py-3 rounded-full flex items-center gap-2.5 font-bold text-base shadow-lg hover:-translate-y-1 transition-all"
 					>
 						<img
 							src="/vector_tickets_hero_homepage.svg"
 							alt="billetterie"
+							class="w-5 h-5"
 						/> Billetterie
 					</a>
 				</div>
 
-				<div class="hero__badge">
-					<img src="/vector_free_eco_hero_homepage.svg" alt="eco" /> GRATUIT
-					& ÉCO
-				</div>
-			</div>
-		</section>
-
-		<section class="stats">
-			<div class="stats__wrapper">
-				<div class="stats__header">
-					<h2 class="stats__title">Le Festival en Chiffres</h2>
-				</div>
-
-				<div class="stats__container">
-					<article class="stats__card">
-						<span class="stats__icon"
-							><img
-								src="/vector_artist_homepage.svg"
-								alt="artistes"
-							/></span
-						>
-						<h3 class="stats__card-title">6 Artistes</h3>
-						<p class="stats__description">
-							Jazz, fanfares et musiques de rue
-						</p>
-					</article>
-
-					<article class="stats__card">
-						<span class="stats__icon"
-							><img
-								src="/vector_eco_homepage.svg"
-								alt="eco"
-							/></span
-						>
-						<h3 class="stats__card-title">100% Éco</h3>
-						<p class="stats__description">
-							Festival écoresponsable et local
-						</p>
-					</article>
-
-					<article class="stats__card">
-						<span class="stats__icon"
-							><img
-								src="/vector_free_homepage.svg"
-								alt="gratuit"
-							/></span
-						>
-						<h3 class="stats__card-title">Gratuit</h3>
-						<p class="stats__description">
-							Ouvert et accessible à tous
-						</p>
-					</article>
-
-					<article class="stats__card">
-						<span class="stats__icon"
-							><img
-								src="/vector_scenes_homepage.svg"
-								alt="scène"
-							/></span
-						>
-						<h3 class="stats__card-title">3 Scènes</h3>
-						<p class="stats__description">
-							Dans le centre-ville historique
-						</p>
-					</article>
-				</div>
-			</div>
-		</section>
-
-		<section class="discover">
-			<h2 class="discover__title">Découvrez le festival</h2>
-
-			<div class="carousel">
-				<button
-					class="carousel__btn carousel__btn--prev"
-					aria-label="Slide précédent"
+				<div
+					class="bg-[var(--color-accent)] text-white px-6 py-2.5 rounded-full flex items-center gap-2.5 font-bold text-sm shadow-lg mt-4 font-sans"
 				>
-					<svg
-						viewBox="0 0 24 24"
-						width="24"
-						height="24"
-						stroke="currentColor"
-						stroke-width="2"
-						fill="none"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><polyline points="15 18 9 12 15 6"></polyline></svg
-					>
-				</button>
-
-				<div class="carousel__container">
-					<article class="carousel__slide">
-						<div class="carousel__card">
-							<span class="carousel__icon"
-								><img
-									src="/vector_program_card_homepage.svg"
-									alt="Icône calendrier"
-								/></span
-							>
-							<h3 class="carousel__card-title">Programme</h3>
-							<p class="carousel__card-description">
-								Découvrez tous les concerts et horaires des 3
-								jours du festival
-							</p>
-							<a href="/programme" class="carousel__link"
-								>Voir le programme →</a
-							>
-						</div>
-					</article>
-
-					<article class="carousel__slide">
-						<div class="carousel__card">
-							<span class="carousel__icon"
-								><img
-									src="/vector_artists_card_homepage.svg"
-									alt="musique"
-								/></span
-							>
-							<h3 class="carousel__card-title">Artistes</h3>
-							<p class="carousel__card-description">
-								Rencontrez les artistes qui feront danser
-								Montbéliard
-							</p>
-							<a href="/artistes" class="carousel__link"
-								>Voir les artistes →</a
-							>
-						</div>
-					</article>
-
-					<article class="carousel__slide">
-						<div class="carousel__card">
-							<span class="carousel__icon"
-								><img
-									src="/vector_scene_card_homepage.svg"
-									alt="scènes"
-								/></span
-							>
-							<h3 class="carousel__card-title">Scènes</h3>
-							<p class="carousel__card-description">
-								Explorez les différentes scènes du festival en
-								centre-ville
-							</p>
-							<a href="/scenes" class="carousel__link"
-								>Voir les scènes →</a
-							>
-						</div>
-					</article>
-
-					<article class="carousel__slide">
-						<div class="carousel__card">
-							<span class="carousel__icon"
-								><img
-									src="/vector_info_card_homepage.svg"
-									alt="infos"
-								/></span
-							>
-							<h3 class="carousel__card-title">
-								Infos pratiques
-							</h3>
-							<p class="carousel__card-description">
-								Tous les détails pour préparer votre visite
-							</p>
-							<a href="/infos" class="carousel__link"
-								>Infos pratiques →</a
-							>
-						</div>
-					</article>
+					<img
+						src="/vector_free_eco_hero_homepage.svg"
+						alt="eco"
+						class="w-5 h-5 brightness-0 invert"
+					/> GRATUIT & ÉCO
 				</div>
+			</div>
+		</section>
 
-				<button
-					class="carousel__btn carousel__btn--next"
-					aria-label="Slide suivant"
+		<section class="bg-[var(--color-bg-warm)] py-20 px-6">
+			<div
+				class="max-w-[1200px] mx-auto flex flex-col items-center gap-12 font-title"
+			>
+				<h2
+					class="text-3xl md:text-4xl font-black text-black text-center"
 				>
-					<svg
-						viewBox="0 0 24 24"
-						width="24"
-						height="24"
-						stroke="currentColor"
-						stroke-width="2"
-						fill="none"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><polyline points="9 18 15 12 9 6"></polyline></svg
-					>
-				</button>
-			</div>
-		</section>
+					Le Festival en Chiffres
+				</h2>
 
-		<section class="partners">
-			<h2 class="partners__title">Nos partenaires</h2>
-			<div class="partners__carousel">
-				<div class="partners__track">
-					<div class="partners__group">
-						<div class="partners__item">
-							<img
-								src="/partner_pdma.avif"
-								alt="Pays de Montbéliard Agglomération"
-							/>
-						</div>
-						<div class="partners__item">
-							<img
-								src="/partner_rbfc.avif"
-								alt="Région Bourgogne-Franche-Comté"
-							/>
-						</div>
-						<div class="partners__item">
-							<img
-								src="/partner_doubs.avif"
-								alt="Département du Doubs"
-							/>
-						</div>
-						<div class="partners__item">
-							<img
-								src="/partner_poudriere.avif"
-								alt="La Poudière"
-							/>
-						</div>
-						<div class="partners__item">
-							<img src="/partner_molocco.avif" alt="Le Moloco" />
-						</div>
-						<div class="partners__item">
-							<img src="/partner_airbnb.avif" alt="Airbnb" />
-						</div>
-						<div class="partners__item">
-							<img
-								src="/partner_creditagricole.avif"
-								alt="Crédit Agricole"
-							/>
-						</div>
-					</div>
-
-					<div class="partners__group">
-						<div class="partners__item">
-							<img
-								src="/partner_pdma.avif"
-								alt="Pays de Montbéliard Agglomération"
-							/>
-						</div>
-						<div class="partners__item">
-							<img
-								src="/partner_rbfc.avif"
-								alt="Région Bourgogne-Franche-Comté"
-							/>
-						</div>
-						<div class="partners__item">
-							<img
-								src="/partner_doubs.avif"
-								alt="Département du Doubs"
-							/>
-						</div>
-						<div class="partners__item">
-							<img
-								src="/partner_poudriere.avif"
-								alt="La Poudière"
-							/>
-						</div>
-						<div class="partners__item">
-							<img src="/partner_molocco.avif" alt="Le Moloco" />
-						</div>
-						<div class="partners__item">
-							<img src="/partner_airbnb.avif" alt="Airbnb" />
-						</div>
-						<div class="partners__item">
-							<img
-								src="/partner_creditagricole.avif"
-								alt="Crédit Agricole"
-							/>
-						</div>
-					</div>
+				<div
+					class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 font-sans"
+				>
+					{
+						[
+							{
+								icon: "/vector_artist_homepage.svg",
+								title: "6 Artistes",
+								desc: "Jazz, fanfares et musiques de rue",
+							},
+							{
+								icon: "/vector_eco_homepage.svg",
+								title: "100% Éco",
+								desc: "Festival écoresponsable et local",
+							},
+							{
+								icon: "/vector_free_homepage.svg",
+								title: "Gratuit",
+								desc: "Ouvert et accessible à tous",
+							},
+							{
+								icon: "/vector_scenes_homepage.svg",
+								title: "3 Scènes",
+								desc: "Dans le centre-ville historique",
+							},
+						].map((stat) => (
+							<article class="bg-white rounded-xl p-10 text-center shadow-sm flex flex-col items-center gap-3 hover:-translate-y-1 transition-transform duration-300 border border-gray-100">
+								<div class="w-9 h-9 flex items-center justify-center mb-2">
+									<img
+										src={stat.icon}
+										alt={stat.title}
+										class="w-full h-full object-contain"
+									/>
+								</div>
+								<h3 class="text-lg font-bold text-black">
+									{stat.title}
+								</h3>
+								<p class="text-sm text-gray-600 leading-relaxed font-medium">
+									{stat.desc}
+								</p>
+							</article>
+						))
+					}
 				</div>
 			</div>
 		</section>
 
-		<section class="prepare">
-			<div class="prepare__content">
-				<h2 class="prepare__title">Préparez votre venue</h2>
-				<p class="prepare__description">
+		<section
+			class="bg-white py-20 w-full overflow-hidden border-t border-gray-50"
+		>
+			<h2
+				class="text-3xl md:text-4xl font-black text-black text-center mb-12 font-title"
+			>
+				Nos partenaires
+			</h2>
+
+			<div class="relative w-full overflow-hidden group">
+				<div class="flex w-max animate-marquee group-hover:pause">
+					{
+						[1, 2].map(() => (
+							<div class="flex gap-6 pr-6">
+								{[
+									"/partner_pdma.avif",
+									"/partner_rbfc.avif",
+									"/partner_doubs.avif",
+									"/partner_poudriere.avif",
+									"/partner_molocco.avif",
+									"/partner_airbnb.avif",
+									"/partner_creditagricole.avif",
+								].map((src) => (
+									<div class="w-48 h-24 bg-white border border-gray-100 rounded-lg flex items-center justify-center p-6 shadow-sm hover:scale-105 transition-transform">
+										<img
+											src={src}
+											alt="Partenaire"
+											class="max-w-full max-h-full object-contain"
+										/>
+									</div>
+								))}
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<section
+			class="bg-[var(--color-primary)] py-20 px-6 text-center flex justify-center"
+		>
+			<div
+				class="max-w-[800px] flex flex-col items-center gap-6 text-white font-sans"
+			>
+				<h2 class="text-4xl font-black text-black font-title uppercase">
+					Préparez votre venue
+				</h2>
+				<p
+					class="text-lg opacity-100 font-medium text-white max-w-[650px]"
+				>
 					Téléchargez le programme complet et consultez toutes les
 					informations pratiques pour profiter pleinement du festival
 				</p>
-				<div class="prepare__buttons">
+				<div class="flex flex-wrap gap-6 justify-center mt-6">
 					<a
 						href="/programme.pdf"
-						class="prepare__btn prepare__btn--primary"
+						class="bg-white text-[var(--color-primary)] px-8 py-3 rounded-full font-bold text-base shadow-lg hover:-translate-y-1 transition-transform flex items-center gap-2.5"
 					>
 						<img
 							src="/vector_download_homepage.svg"
 							alt="télécharger"
+							class="w-5 h-5"
 						/> Télécharger le programme
 					</a>
 					<a
 						href="/contact"
-						class="prepare__btn prepare__btn--secondary"
+						class="bg-transparent text-white border-2 border-white px-8 py-3 rounded-full font-bold text-base hover:bg-white hover:text-[var(--color-primary)] transition-all"
 					>
 						Nous contacter
 					</a>
@@ -351,411 +215,18 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <style>
-	.hero {
-		position: relative;
-		width: 100%;
-		height: 80vh;
-		min-height: 500px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		overflow: hidden;
-	}
-
-	.hero::after {
-		content: "";
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.25);
-		z-index: 1;
-	}
-
-	.hero__bg-image {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		z-index: 0;
-	}
-
-	.hero__content {
-		position: relative;
-		z-index: 2;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 1.2rem;
-		text-align: center;
-		padding: 0 1.5rem;
-		width: 100%;
-	}
-
-	.hero__title {
-		color: #ffffff;
-		font-size: 3.5rem;
-		font-weight: 800;
-		margin: 0 0 1rem 0;
-		line-height: 1.1;
-		text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-		letter-spacing: 1px;
-	}
-
-	.hero__infos {
-		display: flex;
-		gap: 1rem;
-		justify-content: center;
-		flex-wrap: wrap;
-	}
-
-	.hero__info-item {
-		background-color: #ffffff;
-		color: #000000;
-		padding: 0.6rem 1.5rem;
-		border-radius: 999px;
-		display: flex;
-		align-items: center;
-		gap: 0.6rem;
-		font-weight: 700;
-		font-size: 0.95rem;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
-
-	.hero__buttons {
-		display: flex;
-		gap: 1rem;
-		justify-content: center;
-		flex-wrap: wrap;
-	}
-
-	.hero__btn {
-		display: flex;
-		align-items: center;
-		gap: 0.6rem;
-		padding: 0.75rem 1.8rem;
-		border-radius: 999px;
-		text-decoration: none;
-		font-weight: 700;
-		font-size: 1rem;
-		transition: transform 0.2s ease;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
-
-	.hero__btn:hover {
-		transform: translateY(-2px);
-	}
-
-	.hero__btn--primary {
-		background-color: #f29c1f;
-		color: #ffffff;
-	}
-
-	.hero__btn--secondary {
-		background-color: #fbbf24;
-		color: #000000;
-	}
-
-	.hero__badge {
-		background-color: #4caf50;
-		color: #ffffff;
-		padding: 0.6rem 1.5rem;
-		border-radius: 999px;
-		display: flex;
-		align-items: center;
-		gap: 0.6rem;
-		font-weight: 700;
-		font-size: 0.9rem;
-		margin-top: 0.5rem;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
-
-	.hero__info-item img,
-	.hero__btn img,
-	.hero__badge img {
-		width: 20px;
-		height: 20px;
-		object-fit: contain;
-	}
-
-	.stats {
-		background-color: #f6f3e9;
-		padding: 5rem 2rem;
-		width: 100%;
-	}
-
-	.stats__wrapper {
-		max-width: 1200px;
-		margin: 0 auto;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 3rem;
-	}
-
-	.stats__header {
-		text-align: center;
-		width: 100%;
-	}
-
-	.stats__title {
-		font-size: 2.2rem;
-		font-weight: 800;
-		color: #111;
-		margin: 0;
-	}
-
-	.stats__container {
-		width: 100%;
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 1.5rem;
-	}
-
-	.stats__card {
-		background-color: #ffffff;
-		border-radius: 12px;
-		padding: 2.5rem 1.5rem;
-		text-align: center;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0.8rem;
-		transition: transform 0.3s ease;
-	}
-
-	.stats__card:hover {
-		transform: translateY(-5px);
-	}
-
-	.stats__icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin-bottom: 0.5rem;
-	}
-
-	.stats__icon img {
-		width: 35px;
-		height: 35px;
-		object-fit: contain;
-	}
-
-	.stats__card-title {
-		font-size: 1.1rem;
-		font-weight: 800;
-		color: #111;
-		margin: 0;
-	}
-
-	.stats__description {
-		font-size: 0.9rem;
-		color: #666;
-		margin: 0;
-		line-height: 1.4;
-	}
-
-	.discover {
-		background-color: #ffffff;
-		padding: 5rem 2rem;
-		text-align: center;
-	}
-
-	.discover__title {
-		font-size: 2.2rem;
-		font-weight: 800;
-		color: #111;
-		margin-bottom: 3rem;
-	}
-
-	.carousel {
-		position: relative;
-		max-width: 1200px;
-		margin: 0 auto;
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	.carousel__container {
-		display: flex;
-		overflow-x: auto;
-		scroll-snap-type: x mandatory;
-		gap: 1.5rem;
-		scroll-behavior: smooth;
-		padding: 1rem 0;
-		scrollbar-width: none;
-		-ms-overflow-style: none;
-		cursor: grab;
-	}
-
-	.carousel__container:active {
-		cursor: grabbing;
-		scroll-snap-type: none;
-		scroll-behavior: auto;
-	}
-
-	.carousel__container::-webkit-scrollbar {
+	.no-scrollbar::-webkit-scrollbar {
 		display: none;
 	}
-
-	.carousel__slide {
-		flex: 0 0 calc(33.333% - 1rem);
-		scroll-snap-align: start;
-		min-width: 280px;
-		user-select: none;
+	.no-scrollbar {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
 	}
 
-	.carousel__card {
-		background-color: #f6f3e9;
-		border-radius: 12px;
-		padding: 2rem;
-		text-align: left;
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		transition:
-			transform 0.3s ease,
-			box-shadow 0.3s ease;
-		pointer-events: none;
+	.animate-marquee {
+		animation: marquee 30s linear infinite;
 	}
-
-	.carousel__card-title,
-	.carousel__card-description,
-	.carousel__link {
-		pointer-events: auto;
-	}
-
-	.carousel__card:hover {
-		transform: translateY(-5px);
-		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-	}
-
-	.carousel__icon img {
-		width: 40px;
-		height: 40px;
-		margin-bottom: 1.5rem;
-		pointer-events: none;
-	}
-
-	.carousel__card-title {
-		font-size: 1.3rem;
-		font-weight: 800;
-		margin: 0 0 0.8rem 0;
-		color: #111;
-	}
-
-	.carousel__card-description {
-		font-size: 0.95rem;
-		color: #555;
-		flex-grow: 1;
-		margin: 0 0 1.5rem 0;
-		line-height: 1.5;
-	}
-
-	.carousel__link {
-		color: #f29c1f;
-		text-decoration: none;
-		font-weight: 700;
-		font-size: 0.95rem;
-		display: inline-block;
-		transition: color 0.2s ease;
-	}
-
-	.carousel__link:hover {
-		color: #fbbf24;
-	}
-
-	.carousel__btn {
-		background-color: #ffffff;
-		border: 1px solid #e5e7eb;
-		border-radius: 50%;
-		width: 45px;
-		height: 45px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		flex-shrink: 0;
-		color: #333;
-		transition: all 0.2s ease;
-		z-index: 2;
-		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-	}
-
-	.carousel__btn:hover {
-		background-color: #f29c1f;
-		color: #ffffff;
-		border-color: #f29c1f;
-	}
-
-	.partners {
-		background-color: #ffffff;
-		padding: 5rem 0;
-		width: 100%;
-		overflow: hidden;
-	}
-
-	.partners__title {
-		font-size: 2.2rem;
-		font-weight: 800;
-		color: #111;
-		text-align: center;
-		margin-bottom: 3rem;
-	}
-
-	.partners__carousel {
-		width: 100%;
-		overflow: hidden;
-		position: relative;
-	}
-
-	.partners__track {
-		display: flex;
-		width: max-content;
-		animation: scrollPartners 30s linear infinite;
-	}
-
-	.partners__track:hover {
-		animation-play-state: paused;
-	}
-
-	.partners__group {
-		display: flex;
-		gap: 1.5rem;
-		padding-right: 1.5rem;
-	}
-
-	.partners__item {
-		flex: 0 0 200px;
-		height: 100px;
-		background-color: #ffffff;
-		border: 1px solid #f0f0f0;
-		border-radius: 8px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 1.5rem;
-		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-		transition: transform 0.3s ease;
-	}
-
-	.partners__item:hover {
-		transform: scale(1.05);
-	}
-
-	.partners__item img {
-		max-width: 100%;
-		max-height: 100%;
-		object-fit: contain;
-	}
-
-	@keyframes scrollPartners {
+	@keyframes marquee {
 		0% {
 			transform: translateX(0);
 		}
@@ -763,105 +234,8 @@ import Layout from "../layouts/Layout.astro";
 			transform: translateX(-50%);
 		}
 	}
-
-	.prepare {
-		background-color: #f29c1f;
-		padding: 5rem 2rem;
-		display: flex;
-		justify-content: center;
-		text-align: center;
-	}
-
-	.prepare__content {
-		max-width: 800px;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 1.5rem;
-	}
-
-	.prepare__title {
-		font-size: 2.5rem;
-		font-weight: 800;
-		color: #111;
-		margin: 0;
-	}
-
-	.prepare__description {
-		font-size: 1.1rem;
-		color: #ffffff;
-		margin: 0;
-	}
-
-	.prepare__buttons {
-		display: flex;
-		gap: 1.5rem;
-		margin-top: 1.5rem;
-		flex-wrap: wrap;
-		justify-content: center;
-	}
-
-	.prepare__btn {
-		display: flex;
-		align-items: center;
-		gap: 0.6rem;
-		padding: 0.8rem 2rem;
-		border-radius: 999px;
-		text-decoration: none;
-		font-weight: 700;
-		font-size: 1rem;
-		transition:
-			transform 0.2s ease,
-			background-color 0.2s ease,
-			color 0.2s ease;
-	}
-
-	.prepare__btn:hover {
-		transform: translateY(-2px);
-	}
-
-	.prepare__btn--primary {
-		background-color: #ffffff;
-		color: #f29c1f;
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-	}
-
-	.prepare__btn--secondary {
-		background-color: transparent;
-		color: #ffffff;
-		border: 2px solid #ffffff;
-	}
-
-	.prepare__btn img {
-		width: 20px;
-		height: 20px;
-	}
-
-	@media (max-width: 992px) {
-		.hero__title {
-			font-size: 2.2rem;
-		}
-		.stats__container {
-			grid-template-columns: repeat(2, 1fr);
-		}
-		.carousel__slide {
-			flex: 0 0 calc(50% - 0.75rem);
-		}
-	}
-
-	@media (max-width: 576px) {
-		.stats__container {
-			grid-template-columns: 1fr;
-		}
-		.carousel__slide {
-			flex: 0 0 100%;
-		}
-		.carousel__btn {
-			display: none;
-		}
-		.partners__item {
-			flex: 0 0 150px;
-		}
+	.pause {
+		animation-play-state: paused;
 	}
 </style>
 
@@ -871,47 +245,31 @@ import Layout from "../layouts/Layout.astro";
 	const prevBtn = document.querySelector(".carousel__btn--prev");
 
 	if (track && nextBtn && prevBtn) {
-		nextBtn.addEventListener("click", () => {
-			const slide = track.querySelector(".carousel__slide");
-			if (slide) {
-				const slideWidth = slide.clientWidth;
-				track.scrollBy({ left: slideWidth + 24, behavior: "smooth" });
-			}
-		});
+		const scrollAmount = () =>
+			track.querySelector(".carousel__slide")?.clientWidth + 24 || 300;
+		nextBtn.addEventListener("click", () =>
+			track.scrollBy({ left: scrollAmount(), behavior: "smooth" }),
+		);
+		prevBtn.addEventListener("click", () =>
+			track.scrollBy({ left: -scrollAmount(), behavior: "smooth" }),
+		);
 
-		prevBtn.addEventListener("click", () => {
-			const slide = track.querySelector(".carousel__slide");
-			if (slide) {
-				const slideWidth = slide.clientWidth;
-				track.scrollBy({
-					left: -(slideWidth + 24),
-					behavior: "smooth",
-				});
-			}
-		});
-
-		let isDown = false;
-		let startX;
-		let scrollLeft;
-
+		let isDown = false,
+			startX,
+			scrollLeft;
 		track.addEventListener("mousedown", (e) => {
 			isDown = true;
-			startX = e.pageX - track.offsetLeft;
+			startX =
+				(e as MouseEvent).pageX - (track as HTMLElement).offsetLeft;
 			scrollLeft = track.scrollLeft;
 		});
-
-		track.addEventListener("mouseleave", () => {
-			isDown = false;
-		});
-
-		track.addEventListener("mouseup", () => {
-			isDown = false;
-		});
-
+		track.addEventListener("mouseleave", () => (isDown = false));
+		track.addEventListener("mouseup", () => (isDown = false));
 		track.addEventListener("mousemove", (e) => {
 			if (!isDown) return;
 			e.preventDefault();
-			const x = e.pageX - track.offsetLeft;
+			const x =
+				(e as MouseEvent).pageX - (track as HTMLElement).offsetLeft;
 			const walk = (x - startX) * 2;
 			track.scrollLeft = scrollLeft - walk;
 		});

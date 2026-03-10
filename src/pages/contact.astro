@@ -2,70 +2,93 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout>
-    <main class="main">
-        <section class="page-header">
-            <div class="page-header__content">
-                <h1 class="page-header__title">Contactez-nous</h1>
-                <p class="page-header__subtitle">
-                    Une question, une suggestion ou envie de devenir partenaire
-                    ? N'hésitez pas à nous écrire !
-                </p>
-            </div>
+<Layout title="Contact - La Fanfa'Comtoise">
+    <main class="w-full overflow-x-hidden">
+        <section
+            class="bg-[#F6F3E9] py-24 md:py-32 px-6 flex flex-col items-center justify-center text-center"
+        >
+            <h1
+                class="text-5xl md:text-[3.5rem] font-extrabold text-[#111] mb-6 leading-tight"
+            >
+                Contactez-nous
+            </h1>
+            <p
+                class="text-xl text-[#444] max-w-[750px] mx-auto leading-relaxed"
+            >
+                Une question, une suggestion ou envie de devenir partenaire ?
+                N'hésitez pas à nous écrire !
+            </p>
         </section>
 
-        <section class="contact-info">
-            <h2 class="contact-info__title">Nos coordonnées</h2>
-            <div class="contact-info__grid">
-                <div class="contact-info__item">
-                    <div class="contact-info__item-header">
-                        <div class="contact-info__icon-wrapper">
+        <section class="max-w-[1250px] mx-auto my-20 px-6">
+            <h2 class="text-4xl font-extrabold text-center mb-14">
+                Nos coordonnées
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div
+                    class="bg-white p-10 md:p-14 rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] flex flex-col"
+                >
+                    <div class="flex items-center gap-6 mb-6">
+                        <div
+                            class="w-[75px] h-[75px] flex-shrink-0 flex items-center justify-center"
+                        >
                             <img
                                 src="/vector_mail_contact.svg"
                                 alt="Email"
-                                class="contact-info__icon"
+                                class="w-full h-full object-contain"
                             />
                         </div>
-                        <h3 class="contact-info__item-title">Email</h3>
+                        <h3 class="text-2xl font-extrabold">Email</h3>
                     </div>
-                    <p class="contact-info__item-content">
-                        <a href="mailto:contact@fanfacomtoise.fr"
+                    <p class="text-[1.1rem] leading-relaxed text-[#444]">
+                        <a
+                            href="mailto:contact@fanfacomtoise.fr"
+                            class="font-bold hover:text-[#F29C1F] transition-colors"
                             >contact@fanfacomtoise.fr</a
                         >
                     </p>
                 </div>
 
-                <div class="contact-info__item">
-                    <div class="contact-info__item-header">
-                        <div class="contact-info__icon-wrapper">
+                <div
+                    class="bg-white p-10 md:p-14 rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] flex flex-col"
+                >
+                    <div class="flex items-center gap-6 mb-6">
+                        <div
+                            class="w-[75px] h-[75px] flex-shrink-0 flex items-center justify-center"
+                        >
                             <img
                                 src="/vector_phone_contact.svg"
                                 alt="Téléphone"
-                                class="contact-info__icon"
+                                class="w-full h-full object-contain"
                             />
                         </div>
-                        <h3 class="contact-info__item-title">Téléphone</h3>
+                        <h3 class="text-2xl font-extrabold">Téléphone</h3>
                     </div>
-                    <p class="contact-info__item-content">
-                        <strong>03 81 12 34 56</strong><br />
-                        <span class="contact-info__detail"
+                    <div class="text-[1.1rem] leading-relaxed text-[#444]">
+                        <strong class="block">03 81 12 34 56</strong>
+                        <span class="text-sm text-[#888]"
                             >Du lundi au vendredi, 9h-18h</span
                         >
-                    </p>
+                    </div>
                 </div>
 
-                <div class="contact-info__item">
-                    <div class="contact-info__item-header">
-                        <div class="contact-info__icon-wrapper">
+                <div
+                    class="bg-white p-10 md:p-14 rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] flex flex-col"
+                >
+                    <div class="flex items-center gap-6 mb-6">
+                        <div
+                            class="w-[75px] h-[75px] flex-shrink-0 flex items-center justify-center"
+                        >
                             <img
                                 src="/vector_location_contact.svg"
                                 alt="Adresse"
-                                class="contact-info__icon"
+                                class="w-full h-full object-contain"
                             />
                         </div>
-                        <h3 class="contact-info__item-title">Adresse</h3>
+                        <h3 class="text-2xl font-extrabold">Adresse</h3>
                     </div>
-                    <p class="contact-info__item-content">
+                    <p class="text-[1.1rem] leading-relaxed text-[#444]">
                         Association La Fanfa'Comtoise<br />
                         Place Saint-Martin<br />
                         25200 Montbéliard<br />
@@ -75,25 +98,31 @@ import Layout from "../layouts/Layout.astro";
             </div>
         </section>
 
-        <section class="contact-info">
-            <h2 class="contact-info__title">Nos réseaux</h2>
-            <div class="contact-info__grid contact-info__grid--socials">
+        <section class="max-w-[1250px] mx-auto mb-20 px-6">
+            <h2 class="text-4xl font-extrabold text-center mb-14">
+                Nos réseaux
+            </h2>
+            <div
+                class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-[850px] mx-auto justify-center"
+            >
                 <a
                     href="https://facebook.com"
                     target="_blank"
-                    class="contact-info__item contact-info__item--link"
+                    class="group bg-white p-10 md:p-14 rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
                 >
-                    <div class="contact-info__item-header">
-                        <div class="contact-info__icon-wrapper">
+                    <div class="flex items-center gap-6 mb-6">
+                        <div
+                            class="w-[75px] h-[75px] flex-shrink-0 flex items-center justify-center"
+                        >
                             <img
                                 src="/vector_facebook.svg"
                                 alt="Facebook"
-                                class="contact-info__icon"
+                                class="w-full h-full object-contain"
                             />
                         </div>
-                        <h3 class="contact-info__item-title">Facebook</h3>
+                        <h3 class="text-2xl font-extrabold">Facebook</h3>
                     </div>
-                    <p class="contact-info__item-content">
+                    <p class="text-[1.1rem] leading-relaxed text-[#444]">
                         Suivez nos actualités en direct
                     </p>
                 </a>
@@ -101,29 +130,37 @@ import Layout from "../layouts/Layout.astro";
                 <a
                     href="https://instagram.com"
                     target="_blank"
-                    class="contact-info__item contact-info__item--link"
+                    class="group bg-white p-10 md:p-14 rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
                 >
-                    <div class="contact-info__item-header">
-                        <div class="contact-info__icon-wrapper">
+                    <div class="flex items-center gap-6 mb-6">
+                        <div
+                            class="w-[75px] h-[75px] flex-shrink-0 flex items-center justify-center"
+                        >
                             <img
                                 src="/vector_instagram.svg"
                                 alt="Instagram"
-                                class="contact-info__icon"
+                                class="w-full h-full object-contain"
                             />
                         </div>
-                        <h3 class="contact-info__item-title">Instagram</h3>
+                        <h3 class="text-2xl font-extrabold">Instagram</h3>
                     </div>
-                    <p class="contact-info__item-content">
+                    <p class="text-[1.1rem] leading-relaxed text-[#444]">
                         Découvrez les coulisses en images
                     </p>
                 </a>
             </div>
         </section>
 
-        <section class="contact-join">
-            <div class="contact-join__container">
-                <h2 class="contact-join__title">Rejoignez l'équipe</h2>
-                <p class="contact-join__description">
+        <section
+            class="bg-[#F29C1F] text-white py-20 my-24 px-6 text-center w-full"
+        >
+            <div class="max-w-[900px] mx-auto">
+                <h2
+                    class="text-5xl md:text-[3rem] font-black mb-6 uppercase tracking-tight"
+                >
+                    Rejoignez l'équipe
+                </h2>
+                <p class="text-xl leading-relaxed">
                     Vous souhaitez devenir bénévole pour le festival ?
                     Contactez-nous en précisant votre disponibilité dans le
                     formulaire ci-dessous.
@@ -131,317 +168,94 @@ import Layout from "../layouts/Layout.astro";
             </div>
         </section>
 
-        <section class="contact-form">
-            <h2 class="contact-form__title">Envoyez-nous un message</h2>
-            <div class="contact-form__card">
-                <form class="form">
-                    <div class="form__group">
-                        <label for="name" class="form__label"
-                            >Nom complet <span>*</span></label
+        <section class="max-w-[900px] mx-auto mb-28 px-6">
+            <h2 class="text-[2rem] font-extrabold text-[#111] mb-6 text-left">
+                Envoyez-nous un message
+            </h2>
+            <div
+                class="bg-white p-8 md:p-14 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-[#eee]"
+            >
+                <form class="flex flex-col gap-6">
+                    <div class="flex flex-col gap-2">
+                        <label
+                            for="name"
+                            class="font-extrabold text-base text-[#111]"
+                            >Nom complet <span class="text-[#F29C1F]">*</span
+                            ></label
                         >
                         <input
                             type="text"
                             id="name"
-                            class="form__input"
+                            class="w-full p-5 border border-[#ddd] rounded-lg text-base bg-white focus:ring-2 focus:ring-[#F29C1F] outline-none"
                             placeholder="Votre nom"
                             required
                         />
                     </div>
-                    <div class="form__group">
-                        <label for="email" class="form__label"
-                            >Email <span>*</span></label
+
+                    <div class="flex flex-col gap-2">
+                        <label
+                            for="email"
+                            class="font-extrabold text-base text-[#111]"
+                            >Email <span class="text-[#F29C1F]">*</span></label
                         >
                         <input
                             type="email"
                             id="email"
-                            class="form__input"
+                            class="w-full p-5 border border-[#ddd] rounded-lg text-base bg-white focus:ring-2 focus:ring-[#F29C1F] outline-none"
                             placeholder="votre@email.fr"
                             required
                         />
                     </div>
-                    <div class="form__group">
-                        <label for="subject" class="form__label"
-                            >Sujet <span>*</span></label
+
+                    <div class="flex flex-col gap-2">
+                        <label
+                            for="subject"
+                            class="font-extrabold text-base text-[#111]"
+                            >Sujet <span class="text-[#F29C1F]">*</span></label
                         >
                         <input
                             type="text"
                             id="subject"
-                            class="form__input"
+                            class="w-full p-5 border border-[#ddd] rounded-lg text-base bg-white focus:ring-2 focus:ring-[#F29C1F] outline-none"
                             placeholder="Sélectionnez un sujet"
                             required
                         />
                     </div>
-                    <div class="form__group">
-                        <label for="message" class="form__label"
-                            >Message <span>*</span></label
+
+                    <div class="flex flex-col gap-2">
+                        <label
+                            for="message"
+                            class="font-extrabold text-base text-[#111]"
+                            >Message <span class="text-[#F29C1F]">*</span
+                            ></label
                         >
                         <textarea
                             id="message"
-                            class="form__textarea"
+                            rows="6"
+                            class="w-full p-5 border border-[#ddd] rounded-lg text-base bg-white focus:ring-2 focus:ring-[#F29C1F] outline-none resize-y"
                             placeholder="Votre message..."
                             required></textarea>
                     </div>
-                    <button type="submit" class="form__submit">
+
+                    <button
+                        type="submit"
+                        class="w-full mt-4 bg-[#F29C1F] text-white py-5 rounded-full font-extrabold text-xl flex items-center justify-center gap-3 transition-all hover:bg-[#e08b1a] hover:-translate-y-1"
+                    >
                         <img
                             src="/vector_send_contact.svg"
                             alt="Envoyer"
-                            class="form__icon-send"
+                            class="w-5 h-5"
                         />
                         Envoyer le message
                     </button>
                 </form>
             </div>
-            <p class="contact-form__note">
+            <p
+                class="mt-6 text-sm text-[#666] italic text-left leading-relaxed"
+            >
                 Les transports en commun ou en voiture nous facilitent les
                 déplacements à différentes raisons à vôtre demande.
             </p>
         </section>
     </main>
 </Layout>
-
-<style>
-    .page-header {
-        background-color: var(--color-bg-warm);
-        padding: 8rem 2rem 6rem;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .page-header__title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        margin-bottom: 1.5rem;
-        color: #111;
-    }
-
-    .page-header__subtitle {
-        font-size: 1.25rem;
-        max-width: 750px;
-        margin: 0 auto;
-        color: #444;
-    }
-
-    .contact-info {
-        max-width: 1250px;
-        margin: 5rem auto;
-        padding: 0 2rem;
-    }
-
-    .contact-info__title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        margin-bottom: 3.5rem;
-        text-align: center;
-    }
-
-    .contact-info__grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2.5rem;
-    }
-
-    .contact-info__grid--socials {
-        grid-template-columns: repeat(2, 1fr);
-        max-width: 850px;
-        margin: 0 auto;
-        justify-content: center;
-    }
-
-    .contact-info__item {
-        background: white;
-        padding: 3.5rem 2.5rem;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        text-decoration: none;
-        color: inherit;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .contact-info__item--link:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-    }
-
-    .contact-info__item-header {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .contact-info__icon-wrapper {
-        width: 75px;
-        height: 75px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .contact-info__icon {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .contact-info__item-title {
-        font-size: 1.6rem;
-        font-weight: 800;
-    }
-
-    .contact-info__item-content {
-        font-size: 1.1rem;
-        line-height: 1.6;
-        color: #444;
-    }
-
-    .contact-info__item-content a {
-        color: inherit;
-        text-decoration: none;
-        font-weight: 700;
-    }
-
-    .contact-info__detail {
-        font-size: 0.95rem;
-        color: #888;
-    }
-
-    .contact-join {
-        background-color: var(--color-orange);
-        color: white;
-        padding: 5rem 2rem;
-        text-align: center;
-        width: 100%;
-        margin: 6rem 0;
-    }
-
-    .contact-join__container {
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
-    .contact-join__title {
-        font-size: 3rem;
-        font-weight: 900;
-        margin-bottom: 1.5rem;
-    }
-
-    .contact-join__description {
-        font-size: 1.25rem;
-        line-height: 1.6;
-    }
-
-    .contact-form {
-        max-width: 900px;
-        margin: 0 auto 7rem;
-        padding: 0 2rem;
-    }
-
-    .contact-form__title {
-        font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 1.5rem;
-        text-align: left;
-        color: #111;
-    }
-
-    .contact-form__card {
-        background: white;
-        padding: 3.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        border: 1px solid #eee;
-    }
-
-    .form {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .form__group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .form__label {
-        font-weight: 800;
-        font-size: 1rem;
-        color: #111;
-    }
-
-    .form__label span {
-        color: var(--color-orange);
-    }
-
-    .form__input,
-    .form__textarea {
-        width: 100%;
-        padding: 1.2rem;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-family: inherit;
-        font-size: 1rem;
-        background-color: white;
-    }
-
-    .form__textarea {
-        height: 180px;
-        resize: vertical;
-    }
-
-    .form__submit {
-        width: 100%;
-        margin-top: 1rem;
-        background-color: var(--color-orange);
-        color: white;
-        padding: 1.2rem;
-        border-radius: 999px;
-        font-weight: 800;
-        font-size: 1.1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.8rem;
-        cursor: pointer;
-        border: none;
-        transition:
-            transform 0.2s ease,
-            background-color 0.2s ease;
-    }
-
-    .form__submit:hover {
-        transform: translateY(-2px);
-        background-color: #e08b1a;
-    }
-
-    .form__icon-send {
-        width: 20px;
-        height: 20px;
-    }
-
-    .contact-form__note {
-        text-align: left;
-        margin-top: 1.5rem;
-        font-size: 0.85rem;
-        color: #666;
-    }
-
-    @media (max-width: 950px) {
-        .contact-info__grid,
-        .contact-info__grid--socials {
-            grid-template-columns: 1fr;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .contact-form__card {
-            padding: 2rem 1.5rem;
-        }
-    }
-</style>

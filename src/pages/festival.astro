@@ -2,41 +2,60 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout>
-    <main class="main">
-        <section class="page-header">
-            <video class="page-header__video" autoplay muted loop playsinline>
+<Layout title="Le Festival - La Fanfa'Comtoise">
+    <main class="w-full font-sans">
+        <section
+            class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center overflow-hidden"
+        >
+            <video
+                class="absolute top-1/2 left-1/2 min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 -z-10 object-cover"
+                autoplay
+                muted
+                loop
+                playsinline
+            >
                 <source src="/video_festival.mp4" type="video/mp4" />
             </video>
-            <div class="page-header__content">
-                <h1 class="page-header__title">Le Festival</h1>
-                <p class="page-header__subtitle">
+            <div class="absolute inset-0 bg-black/20 -z-10"></div>
+
+            <div class="relative z-10 max-w-[800px] px-8 font-title">
+                <h1
+                    class="text-[3rem] lg:text-[4rem] text-white mb-4 font-black drop-shadow-lg"
+                >
+                    Le Festival
+                </h1>
+                <p
+                    class="text-xl text-white font-medium leading-relaxed drop-shadow-md"
+                >
                     Un festival gratuit, écoresponsable et convivial qui fait
                     vibrer Montbéliard depuis 2018
                 </p>
             </div>
         </section>
 
-        <section class="festival-section">
-            <div class="festival-section__header">
-                <span class="festival-section__icon">
+        <section class="max-w-[1100px] mx-auto my-20 px-8">
+            <div class="flex items-center gap-5 mb-10 font-title">
+                <span class="flex-shrink-0">
                     <img
                         src="/vector_history_festival.svg"
                         alt="Icône Histoire"
+                        class="w-[35px] h-[35px] object-contain"
                     />
                 </span>
-                <h2 class="festival-section__title">Notre histoire</h2>
+                <h2 class="text-[2.5rem] font-black text-black">
+                    Notre histoire
+                </h2>
             </div>
 
-            <div class="festival-section__content">
-                <p>
+            <div class="text-[1.1rem] text-gray-700 leading-[1.8]">
+                <p class="mb-6">
                     Né en 2018 de la passion d'un collectif de musiciens et
                     d'amoureux de la culture, La Fanfa'Comtoise est devenu un
                     rendez-vous incontournable pour les mélomanes. De la musique
                     au jazz, de musiques de rue et de fanfares, le festival
                     célèbre la richesse musicale de notre région à Montbéliard.
                 </p>
-                <p>
+                <p class="mb-6">
                     Année après année, grâce à un festival accessible à tous,
                     gratuit, qui célèbre la richesse musicale de notre région
                     tout en respectant nos valeurs écologiques. Chaque année,
@@ -45,141 +64,256 @@ import Layout from "../layouts/Layout.astro";
                 </p>
             </div>
 
-            <div class="festival-section__stats">
-                <article class="stat-card">
-                    <span class="stat-card__number">7<sup>e</sup></span>
-                    <p class="stat-card__label">Édition en 2025</p>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-16 font-title">
+                <article
+                    class="bg-white p-12 lg:px-8 py-12 rounded-[15px] text-center shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-gray-100"
+                >
+                    <span
+                        class="block text-5xl font-black text-[var(--color-primary)] mb-2"
+                        >7<sup>e</sup></span
+                    >
+                    <p class="font-bold text-gray-500 uppercase tracking-wide">
+                        Édition en 2025
+                    </p>
                 </article>
 
-                <article class="stat-card">
-                    <span class="stat-card__number">10k+</span>
-                    <p class="stat-card__label">Festivaliers en 2024</p>
+                <article
+                    class="bg-white p-12 lg:px-8 py-12 rounded-[15px] text-center shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-gray-100"
+                >
+                    <span
+                        class="block text-5xl font-black text-[var(--color-primary)] mb-2"
+                        >10k+</span
+                    >
+                    <p class="font-bold text-gray-500 uppercase tracking-wide">
+                        Festivaliers en 2024
+                    </p>
                 </article>
 
-                <article class="stat-card">
-                    <span class="stat-card__number">30+</span>
-                    <p class="stat-card__label">Artistes depuis 2018</p>
+                <article
+                    class="bg-white p-12 lg:px-8 py-12 rounded-[15px] text-center shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-gray-100"
+                >
+                    <span
+                        class="block text-5xl font-black text-[var(--color-primary)] mb-2"
+                        >30+</span
+                    >
+                    <p class="font-bold text-gray-500 uppercase tracking-wide">
+                        Artistes depuis 2018
+                    </p>
                 </article>
             </div>
         </section>
 
-        <section class="festival-section">
-            <div class="festival-section__header">
-                <span class="festival-section__icon">
-                    <img src="/vector_team_festival.svg" alt="Icône Équipe" />
+        <section class="max-w-[1100px] mx-auto my-20 px-8">
+            <div class="flex items-center gap-5 mb-10 font-title">
+                <span class="flex-shrink-0">
+                    <img
+                        src="/vector_team_festival.svg"
+                        alt="Icône Équipe"
+                        class="w-[35px] h-[35px] object-contain"
+                    />
                 </span>
-                <h2 class="festival-section__title">L'équipe</h2>
+                <h2 class="text-[2.5rem] font-black text-black">L'équipe</h2>
             </div>
 
-            <p class="festival-section__intro">
+            <p class="mb-6 leading-[1.8] text-[1.1rem] text-gray-700">
                 La Fanfa'Comtoise, c'est avant tout une équipe qui œuvre toute
                 l'année pour vous offrir un festival unique et de qualité.
             </p>
 
-            <div class="team-groups">
-                <div class="team-group-card">
-                    <h3 class="team-group__title">Équipes organisatrice</h3>
-                    <ul class="team-group__list">
-                        <li>Direction & pilotage</li>
-                        <li>Communication & marketing</li>
-                        <li>Logistique & production</li>
-                        <li>Coordination délégués</li>
-                        <li>Relations partenaires</li>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-8">
+                <div
+                    class="bg-white p-12 rounded-[15px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-gray-100"
+                >
+                    <h3
+                        class="text-2xl mb-8 text-[var(--color-primary)] font-black font-title uppercase tracking-tight"
+                    >
+                        Équipes organisatrice
+                    </h3>
+                    <ul class="list-none p-0">
+                        <li
+                            class="py-3 border-b border-gray-50 text-gray-700 font-medium italic"
+                        >
+                            Direction & pilotage
+                        </li>
+                        <li
+                            class="py-3 border-b border-gray-50 text-gray-700 font-medium italic"
+                        >
+                            Communication & marketing
+                        </li>
+                        <li
+                            class="py-3 border-b border-gray-50 text-gray-700 font-medium italic"
+                        >
+                            Logistique & production
+                        </li>
+                        <li
+                            class="py-3 border-b border-gray-50 text-gray-700 font-medium italic"
+                        >
+                            Coordination délégués
+                        </li>
+                        <li class="py-3 text-gray-700 font-medium italic">
+                            Relations partenaires
+                        </li>
                     </ul>
                 </div>
 
-                <div class="team-group-card">
-                    <h3 class="team-group__title">Équipes techniques</h3>
-                    <ul class="team-group__list">
-                        <li>Régie son & lumière</li>
-                        <li>Montage & démontage</li>
-                        <li>Accueil artistes</li>
-                        <li>Sécurité & premiers secours</li>
-                        <li>Décoration & aménagement</li>
+                <div
+                    class="bg-white p-12 rounded-[15px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-gray-100"
+                >
+                    <h3
+                        class="text-2xl mb-8 text-[var(--color-primary)] font-black font-title uppercase tracking-tight"
+                    >
+                        Équipes techniques
+                    </h3>
+                    <ul class="list-none p-0">
+                        <li
+                            class="py-3 border-b border-gray-50 text-gray-700 font-medium italic"
+                        >
+                            Régie son & lumière
+                        </li>
+                        <li
+                            class="py-3 border-b border-gray-50 text-gray-700 font-medium italic"
+                        >
+                            Montage & démontage
+                        </li>
+                        <li
+                            class="py-3 border-b border-gray-50 text-gray-700 font-medium italic"
+                        >
+                            Accueil artistes
+                        </li>
+                        <li
+                            class="py-3 border-b border-gray-50 text-gray-700 font-medium italic"
+                        >
+                            Sécurité & premiers secours
+                        </li>
+                        <li class="py-3 text-gray-700 font-medium italic">
+                            Décoration & aménagement
+                        </li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <section class="join-us">
-            <div class="join-us__card">
-                <div class="join-us__content">
-                    <h3 class="join-us__title">Rejoignez-nous !</h3>
-                    <p class="join-us__text">
+        <section class="max-w-[1100px] mx-auto py-16 px-8 text-center">
+            <div
+                class="border-2 border-[var(--color-primary)] rounded-[20px] p-12 lg:py-20 lg:px-12 bg-transparent"
+            >
+                <div class="max-w-[800px] mx-auto">
+                    <h3
+                        class="text-[2.5rem] font-black mb-6 text-black font-title uppercase"
+                    >
+                        Rejoignez-nous !
+                    </h3>
+                    <p
+                        class="text-[1.2rem] text-gray-700 mb-10 leading-relaxed font-medium"
+                    >
                         Vous souhaitez participer à l'aventure ? Contactez-nous
                         pour découvrir les opportunités de bénévolat et
                         d'engagement au sein de notre équipe.
                     </p>
-                    <a href="/contact" class="join-us__link">Nous contacter</a>
+                    <a
+                        href="/contact"
+                        class="inline-block bg-[var(--color-primary)] text-white px-12 py-4 rounded-full font-black text-[1.1rem] transition-all hover:-translate-y-1 shadow-lg hover:shadow-xl font-title uppercase tracking-wider"
+                        >Nous contacter</a
+                    >
                 </div>
             </div>
         </section>
 
-        <section class="festival-section">
-            <div class="festival-section__header">
-                <span class="festival-section__icon">
+        <section class="max-w-[1100px] mx-auto my-20 px-8">
+            <div class="flex items-center gap-5 mb-10 font-title">
+                <span class="flex-shrink-0">
                     <img
                         src="/vector_valors_festival.svg"
                         alt="Icône Valeurs"
+                        class="w-[35px] h-[35px] object-contain"
                     />
                 </span>
-                <h2 class="festival-section__title">Nos valeurs</h2>
+                <h2 class="text-[2.5rem] font-black text-black">Nos valeurs</h2>
             </div>
 
-            <div class="values-grid">
-                <article class="value-card">
-                    <span class="value-card__icon"
-                        ><img src="/vector_eco_festival.svg" alt="éco" /></span
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <article
+                    class="bg-white p-12 rounded-[15px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-gray-50"
+                >
+                    <span class="block mb-6"
+                        ><img
+                            src="/vector_eco_festival.svg"
+                            alt="éco"
+                            class="w-[45px] h-[45px] object-contain"
+                        /></span
                     >
-                    <h3 class="value-card__title">Écoresponsabilité</h3>
-                    <p class="value-card__description">
+                    <h3
+                        class="text-[1.4rem] mb-4 font-black text-black font-title"
+                    >
+                        Écoresponsabilité
+                    </h3>
+                    <p class="leading-relaxed text-gray-600 font-medium">
                         Réduction des déchets, utilisation de matériaux
                         durables, billets zéros. Nous nous engageons pour un
                         festival à impact environnemental minimal.
                     </p>
                 </article>
 
-                <article class="value-card">
-                    <span class="value-card__icon"
+                <article
+                    class="bg-white p-12 rounded-[15px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-gray-50"
+                >
+                    <span class="block mb-6"
                         ><img
                             src="/vector_accessibility_festival.svg"
                             alt="accessibilité"
+                            class="w-[45px] h-[45px] object-contain"
                         /></span
                     >
-                    <h3 class="value-card__title">Accessibilité</h3>
-                    <p class="value-card__description">
+                    <h3
+                        class="text-[1.4rem] mb-4 font-black text-black font-title"
+                    >
+                        Accessibilité
+                    </h3>
+                    <p class="leading-relaxed text-gray-600 font-medium">
                         Un festival gratuit et ouvert à tous, avec des espaces
                         accessibles aux personnes en situation de handicap. Nos
                         programmes priorisent l'inclusion.
                     </p>
                 </article>
 
-                <article class="value-card">
-                    <span class="value-card__icon"
+                <article
+                    class="bg-white p-12 rounded-[15px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-gray-50"
+                >
+                    <span class="block mb-6"
                         ><img
                             src="/vector_music_festival.svg"
                             alt="musique"
+                            class="w-[45px] h-[45px] object-contain"
                         /></span
                     >
-                    <h3 class="value-card__title">
+                    <h3
+                        class="text-[1.4rem] mb-4 font-black text-black font-title"
+                    >
                         Soutien aux artistes locaux
                     </h3>
-                    <p class="value-card__description">
+                    <p class="leading-relaxed text-gray-600 font-medium">
                         Promotion des talents régionaux du jazz, fanfares et
                         musiques de rue. Nous valorisons le patrimoine musical
                         de notre région.
                     </p>
                 </article>
 
-                <article class="value-card">
-                    <span class="value-card__icon"
+                <article
+                    class="bg-white p-12 rounded-[15px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-gray-50"
+                >
+                    <span class="block mb-6"
                         ><img
                             src="/vector_convivialite_festival.svg"
                             alt="convivialité"
+                            class="w-[45px] h-[45px] object-contain"
                         /></span
                     >
-                    <h3 class="value-card__title">Convivialité</h3>
-                    <p class="value-card__description">
+                    <h3
+                        class="text-[1.4rem] mb-4 font-black text-black font-title"
+                    >
+                        Convivialité
+                    </h3>
+                    <p class="leading-relaxed text-gray-600 font-medium">
                         Un esprit de partage et d'échanges dans une atmosphère
                         chaleureuse et bienveillante pour tous les publics.
                     </p>
@@ -187,18 +321,26 @@ import Layout from "../layouts/Layout.astro";
             </div>
         </section>
 
-        <section class="edition-banner">
-            <div class="edition-card">
-                <h2 class="edition-card__title">
+        <section class="py-20 px-8 max-w-[1100px] mx-auto">
+            <div
+                class="border-2 border-[var(--color-primary)] rounded-[20px] text-black p-12 lg:py-20 lg:px-16 text-center bg-white shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
+            >
+                <h2
+                    class="text-[2.2rem] lg:text-[3rem] mb-10 font-black font-title uppercase tracking-tighter"
+                >
                     Édition 2025 : "Retour aux sources"
                 </h2>
-                <p class="edition-card__description">
+                <p
+                    class="text-[1.2rem] leading-[1.8] mb-8 max-w-[900px] mx-auto text-gray-700"
+                >
                     Pour cette édition, nous revenons à l'essence même de La
                     Fanfa'Comtoise : célébrer l'énergie des rues, les traditions
                     musicales régionales et la passion des musiciens qui
                     façonnent son âme.
                 </p>
-                <p class="edition-card__description">
+                <p
+                    class="text-[1.2rem] leading-[1.8] mb-8 max-w-[900px] mx-auto text-gray-700"
+                >
                     Un programme riche en émotions, avec des artistes qui
                     reprendront les valeurs fondatrices de notre festival :
                     authenticité, convivialité et engagement pour une culture
@@ -208,272 +350,3 @@ import Layout from "../layouts/Layout.astro";
         </section>
     </main>
 </Layout>
-
-<style>
-    .page-header {
-        position: relative;
-        height: 60vh;
-        min-height: 400px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        overflow: hidden;
-    }
-
-    .page-header__video {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        min-width: 100%;
-        min-height: 100%;
-        transform: translate(-50%, -50%);
-        z-index: -1;
-        object-fit: cover;
-    }
-
-    .page-header__content {
-        position: relative;
-        z-index: 1;
-        max-width: 800px;
-        padding: 0 2rem;
-    }
-
-    .page-header__title {
-        font-size: 4rem;
-        color: #111111;
-        margin-bottom: 1rem;
-        font-weight: 800;
-    }
-
-    .page-header__subtitle {
-        font-size: 1.25rem;
-        color: #111111;
-        font-weight: 500;
-        line-height: 1.5;
-    }
-
-    .festival-section {
-        max-width: 1100px;
-        margin: 5rem auto;
-        padding: 0 2rem;
-    }
-
-    .festival-section__header {
-        display: flex;
-        align-items: center;
-        gap: 1.2rem;
-        margin-bottom: 2.5rem;
-    }
-
-    .festival-section__icon img {
-        width: 35px;
-        height: 35px;
-        object-fit: contain;
-    }
-
-    .festival-section__title {
-        font-size: 2.5rem;
-        font-weight: 800;
-    }
-
-    .festival-section__content p {
-        margin-bottom: 1.5rem;
-        line-height: 1.8;
-        font-size: 1.1rem;
-        color: #444;
-    }
-
-    .festival-section__stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
-        margin-top: 4rem;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 3rem 2rem;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
-
-    .stat-card__number {
-        display: block;
-        font-size: 3rem;
-        font-weight: 900;
-        color: var(--color-orange);
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-card__label {
-        font-weight: 600;
-        color: #666;
-    }
-
-    .team-groups {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2.5rem;
-        margin-top: 2rem;
-    }
-
-    .team-group-card {
-        background: white;
-        padding: 3rem;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
-
-    .team-group__title {
-        font-size: 1.5rem;
-        margin-bottom: 2rem;
-        color: var(--color-orange);
-        font-weight: 800;
-    }
-
-    .team-group__list {
-        list-style: none;
-        padding: 0;
-    }
-
-    .team-group__list li {
-        padding: 0.8rem 0;
-        border-bottom: 1px solid #f5f5f5;
-        color: #444;
-        font-weight: 500;
-    }
-
-    .join-us {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 4rem 2rem;
-        text-align: center;
-    }
-
-    .join-us__card {
-        border: 2px solid var(--color-orange);
-        border-radius: 20px;
-        padding: 5rem 3rem;
-        background-color: transparent;
-    }
-
-    .join-us__content {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .join-us__title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        margin-bottom: 1.5rem;
-    }
-
-    .join-us__text {
-        font-size: 1.2rem;
-        color: #444;
-        margin-bottom: 2.5rem;
-        line-height: 1.6;
-    }
-
-    .join-us__link {
-        display: inline-block;
-        background-color: var(--color-orange);
-        color: white;
-        padding: 1rem 3rem;
-        border-radius: 999px;
-        font-weight: 800;
-        font-size: 1.1rem;
-        transition: transform 0.2s ease;
-        box-shadow: 0 4px 15px rgba(242, 156, 31, 0.4);
-    }
-
-    .join-us__link:hover {
-        transform: translateY(-3px);
-    }
-
-    .values-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2.5rem;
-    }
-
-    .value-card {
-        background: white;
-        padding: 3rem;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
-
-    .value-card__icon img {
-        width: 45px;
-        height: 45px;
-        margin-bottom: 1.5rem;
-        object-fit: contain;
-    }
-
-    .value-card__title {
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
-        font-weight: 800;
-    }
-
-    .value-card__description {
-        line-height: 1.6;
-        color: #555;
-    }
-
-    .edition-banner {
-        padding: 5rem 2rem;
-        max-width: 1100px;
-        margin: 0 auto;
-    }
-
-    .edition-card {
-        border: 2px solid var(--color-orange);
-        border-radius: 20px;
-        color: #111;
-        padding: 5rem 4rem;
-        text-align: center;
-        background-color: white;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
-
-    .edition-card__title {
-        color: #111;
-        font-size: 3rem;
-        margin-bottom: 2.5rem;
-        font-weight: 900;
-    }
-
-    .edition-card__description {
-        font-size: 1.2rem;
-        line-height: 1.8;
-        margin-bottom: 2rem;
-        max-width: 900px;
-        margin-left: auto;
-        margin-right: auto;
-        color: #444;
-    }
-
-    @media (max-width: 992px) {
-        .team-groups,
-        .values-grid {
-            grid-template-columns: 1fr;
-        }
-        .festival-section__stats {
-            grid-template-columns: 1fr;
-        }
-        .page-header__title {
-            font-size: 3rem;
-        }
-        .join-us__card,
-        .edition-card {
-            padding: 3rem 1.5rem;
-        }
-        .edition-card__title {
-            font-size: 2.2rem;
-        }
-    }
-</style>
