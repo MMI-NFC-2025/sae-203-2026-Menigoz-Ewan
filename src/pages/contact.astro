@@ -1,0 +1,269 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+    <main class="main">
+        <section class="page-header">
+            <div class="page-header__content">
+                <h1 class="page-header__title">Contactez-nous</h1>
+                <p class="page-header__subtitle">
+                    Une question, une suggestion ou envie de devenir partenaire
+                    ? N'hésitez pas à nous écrire !
+                </p>
+            </div>
+        </section>
+
+        <section class="contact-info">
+            <h2 class="contact-info__title">Nos coordonnées</h2>
+            <div class="contact-info__grid">
+                <div class="contact-info__item">
+                    <div class="contact-info__item-header">
+                        <div class="contact-info__icon-wrapper">
+                            <img
+                                src="/vector_mail_contact.svg"
+                                alt="Email"
+                                class="contact-info__icon"
+                            />
+                        </div>
+                        <h3 class="contact-info__item-title">Email</h3>
+                    </div>
+                    <p class="contact-info__item-content">
+                        <a href="mailto:contact@fanfacomtoise.fr"
+                            >contact@fanfacomtoise.fr</a
+                        >
+                    </p>
+                </div>
+
+                <div class="contact-info__item">
+                    <div class="contact-info__item-header">
+                        <div class="contact-info__icon-wrapper">
+                            <img
+                                src="/vector_phone_contact.svg"
+                                alt="Téléphone"
+                                class="contact-info__icon"
+                            />
+                        </div>
+                        <h3 class="contact-info__item-title">Téléphone</h3>
+                    </div>
+                    <p class="contact-info__item-content">
+                        <strong>03 81 12 34 56</strong><br />
+                        <span class="contact-info__detail"
+                            >Du lundi au vendredi, 9h-18h</span
+                        >
+                    </p>
+                </div>
+
+                <div class="contact-info__item">
+                    <div class="contact-info__item-header">
+                        <div class="contact-info__icon-wrapper">
+                            <img
+                                src="/vector_location_contact.svg"
+                                alt="Adresse"
+                                class="contact-info__icon"
+                            />
+                        </div>
+                        <h3 class="contact-info__item-title">Adresse</h3>
+                    </div>
+                    <p class="contact-info__item-content">
+                        Association La Fanfa'Comtoise<br />
+                        Place Saint-Martin<br />
+                        25200 Montbéliard<br />
+                        France
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-info">
+            <h2 class="contact-info__title">Nos réseaux</h2>
+            <div class="contact-info__grid contact-info__grid--socials">
+                <a
+                    href="https://facebook.com"
+                    target="_blank"
+                    class="contact-info__item contact-info__item--link"
+                >
+                    <div class="contact-info__item-header">
+                        <div class="contact-info__icon-wrapper">
+                            <img
+                                src="/vector_facebook.svg"
+                                alt="Facebook"
+                                class="contact-info__icon"
+                            />
+                        </div>
+                        <h3 class="contact-info__item-title">Facebook</h3>
+                    </div>
+                    <p class="contact-info__item-content">
+                        Suivez nos actualités en direct
+                    </p>
+                </a>
+
+                <a
+                    href="https://instagram.com"
+                    target="_blank"
+                    class="contact-info__item contact-info__item--link"
+                >
+                    <div class="contact-info__item-header">
+                        <div class="contact-info__icon-wrapper">
+                            <img
+                                src="/vector_instagram.svg"
+                                alt="Instagram"
+                                class="contact-info__icon"
+                            />
+                        </div>
+                        <h3 class="contact-info__item-title">Instagram</h3>
+                    </div>
+                    <p class="contact-info__item-content">
+                        Découvrez les coulisses en images
+                    </p>
+                </a>
+            </div>
+        </section>
+
+        <section class="contact-join">
+            <div class="contact-join__container">
+                <h2 class="contact-join__title">Rejoignez l'équipe</h2>
+                <p class="contact-join__description">
+                    Vous souhaitez devenir bénévole pour le festival ?
+                    Contactez-nous en précisant votre disponibilité dans le
+                    formulaire ci-dessous.
+                </p>
+            </div>
+        </section>
+
+        <section class="contact-form">
+            <div class="contact-form__card">
+                <h2 class="contact-form__title">Envoyez-nous un message</h2>
+                <form class="form">
+                    <div class="form__group">
+                        <label for="name" class="form__label"
+                            >Nom complet <span>*</span></label
+                        >
+                        <input
+                            type="text"
+                            id="name"
+                            class="form__input"
+                            placeholder="Votre nom"
+                            required
+                        />
+                    </div>
+                    <div class="form__group">
+                        <label for="email" class="form__label"
+                            >Email <span>*</span></label
+                        >
+                        <input
+                            type="email"
+                            id="email"
+                            class="form__input"
+                            placeholder="votre@email.fr"
+                            required
+                        />
+                    </div>
+                    <div class="form__group">
+                        <label for="subject" class="form__label"
+                            >Sujet <span>*</span></label
+                        >
+                        <input
+                            type="text"
+                            id="subject"
+                            class="form__input"
+                            placeholder="Objet de votre message"
+                            required
+                        />
+                    </div>
+                    <div class="form__group">
+                        <label for="message" class="form__label"
+                            >Message <span>*</span></label
+                        >
+                        <textarea
+                            id="message"
+                            class="form__textarea"
+                            placeholder="Votre message..."
+                            required></textarea>
+                    </div>
+                    <button type="submit" class="form__submit">
+                        <img src="/vector_send_contact.svg" alt="Envoyer" />
+                        Envoyer le message
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+</Layout>
+
+<style>
+    /* ... (Header Styles) ... */
+
+    .contact-info {
+        max-width: 1250px;
+        margin: 5rem auto;
+        padding: 0 2rem;
+    }
+
+    .contact-info__title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 3.5rem;
+        text-align: center;
+    }
+
+    .contact-info__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2.5rem;
+    }
+
+    .contact-info__grid--socials {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 850px;
+        margin: 0 auto;
+        justify-content: center;
+    }
+
+    .contact-info__item {
+        background: white;
+        padding: 3.5rem 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .contact-info__item-header {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Gestion de la taille des icônes */
+    .contact-info__icon-wrapper {
+        width: 75px; /* On augmente le conteneur */
+        height: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .contact-info__icon {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .contact-info__item-title {
+        font-size: 1.6rem;
+        font-weight: 800;
+    }
+
+    .contact-info__item-content {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #444;
+    }
+
+    /* ... (Reste des styles inchangés) ... */
+</style>

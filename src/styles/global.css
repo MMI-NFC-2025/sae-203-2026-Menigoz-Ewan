@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+:root {
+    --color-white: #ffffff;
+    --color-border: #e5e7eb;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+}

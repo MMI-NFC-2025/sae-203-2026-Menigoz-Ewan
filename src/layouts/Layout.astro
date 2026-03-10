@@ -1,20 +1,77 @@
 ---
-import '../styles/global.css';
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 ---
 
-<!doctype html>
-<html lang="en">
+<html lang="fr">
 	<head>
-		<meta charset="UTF-8" />
+		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>La Fanfa'Comtoise</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+			rel="stylesheet"
+		/>
 	</head>
 	<body>
-		<slot />
+		<Header />
+
+		<main>
+			<slot />
+		</main>
+
+		<Footer />
 	</body>
 </html>
 
+<style is:global>
+	:root {
+		--color-orange: #f29c1f;
+		--color-yellow: #fbbf24;
+		--color-green: #8fd26a;
+		--color-white: #ffffff;
+		--color-black: #111111;
+		--color-bg-warm: #f6f3e9;
+		--font-primary: "Inter", sans-serif;
+	}
 
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+		font-family: var(--font-primary) !important;
+	}
+
+	html {
+		scroll-behavior: smooth;
+	}
+
+	body {
+		margin: 0;
+		padding: 0;
+		background-color: var(--color-bg-warm);
+		color: var(--color-black);
+		line-height: 1.4;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	h1,
+	h2,
+	h3 {
+		font-weight: 800;
+		line-height: 1.1;
+		margin: 0;
+	}
+
+	a {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	img {
+		max-width: 100%;
+		display: block;
+	}
+</style>
