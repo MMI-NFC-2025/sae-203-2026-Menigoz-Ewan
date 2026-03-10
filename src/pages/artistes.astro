@@ -1,0 +1,277 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PocketBase from "pocketbase";
+
+const pb = new PocketBase("http://127.0.0.1:8090");
+
+const records = await pb.collection("artistes").getFullList({
+    sort: "date_passage",
+    expand: "scene_id",
+});
+
+const formatterDate = new Intl.DateTimeFormat("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+});
+
+const getColorByGenre = (genre: string | string[]) => {
+    const g = String(genre || "").toLowerCase();
+
+    if (g.includes("jazz")) return "bg-[var(--color-secondary)] text-black";
+    if (g.includes("fanfare")) return "bg-[var(--color-primary)] text-white";
+    return "bg-[var(--color-accent)] text-white";
+};
+
+const artistes = records.map((record) => {
+    const dateObj = new Date(record.date_passage);
+    const dateFormatee = formatterDate.format(dateObj).replace(",", " à");
+    const genreAffiche = Array.isArray(record.genre)
+        ? record.genre.join(", ")
+        : record.genre || "Non défini";
+
+    const imageUrl = record.image_principale
+        ? `http://127.0.0.1:8090/api/files/${record.collectionId}/${record.id}/${record.image_principale}`
+        : "/lazy_birds_artist.avif";
+
+    return {
+        id: record.id,
+        nom: record.nom,
+        dateObj: dateObj.getTime(),
+        dateText: dateFormatee,
+        scene: record.expand?.scene_id?.nom || "Scène à confirmer",
+        genre: genreAffiche,
+        couleurGenre: getColorByGenre(record.genre),
+        image: imageUrl,
+    };
+});
+---
+
+<Layout title="Artistes - La Fanfa'Comtoise">
+    <main class="w-full bg-[var(--color-bg-light)] font-sans pb-20">
+        <section
+            class="relative w-full h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden"
+        >
+            <img
+                src="/hero_artist.svg"
+                alt="Les Artistes du festival"
+                class="absolute inset-0 w-full h-full object-cover z-0"
+            />
+            <div class="absolute inset-0 bg-black/40 z-10"></div>
+
+            <div
+                class="relative z-20 flex flex-col items-center text-center px-6 font-title"
+            >
+                <div
+                    class="bg-black bg-opacity-0 border-2 border-white text-white px-8 py-3 rounded-full flex items-center gap-3 font-bold text-base mb-6 shadow-lg"
+                >
+                    <img
+                        src="/vector_music_note_artist.svg"
+                        alt="Icône artistes"
+                        class="w-5 h-5"
+                    />
+                    <span>{artistes.length} artistes</span>
+                </div>
+                <h1
+                    class="text-5xl md:text-[4rem] text-white font-black mb-4 drop-shadow-lg tracking-tighter uppercase"
+                >
+                    Les Artistes
+                </h1>
+                <p
+                    class="text-xl text-white/90 font-medium drop-shadow-md max-w-2xl"
+                >
+                    Découvrez les talents jazz, fanfare et musiques de rue qui
+                    feront vibrer le festival
+                </p>
+            </div>
+        </section>
+
+        <section class="max-w-[1200px] mx-auto py-20 px-6">
+            <div
+                class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-16 border-b-2 border-[var(--color-primary)] pb-6"
+            >
+                <h2
+                    class="text-3xl md:text-4xl font-black text-black font-title uppercase tracking-tight"
+                >
+                    {artistes.length} artistes programmés
+                </h2>
+
+                <div
+                    class="flex items-center gap-4 bg-white px-6 py-3 rounded-2xl shadow-sm border border-gray-100"
+                >
+                    <label
+                        for="sort-artists"
+                        class="font-bold text-gray-700 whitespace-nowrap"
+                        >Trier par :</label
+                    >
+                    <div class="relative">
+                        <select
+                            id="sort-artists"
+                            class="pl-3 pr-10 py-2 bg-transparent focus:outline-none font-bold text-[var(--color-primary)] cursor-pointer appearance-none text-lg"
+                        >
+                            <option value="date">Date de passage</option>
+                            <option value="name">Ordre alphabétique</option>
+                            <option value="genre">Genre musical</option>
+                        </select>
+                        <svg
+                            class="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-primary)] pointer-events-none"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                            ><path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="3"
+                                d="M19 9l-7 7-7-7"></path></svg
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <div
+                id="artists-grid"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
+            >
+                {
+                    artistes.map((artist) => (
+                        <article
+                            class="artist-card bg-white rounded-[20px] overflow-hidden shadow-sm border border-gray-100 flex flex-col hover:shadow-xl transition-all hover:-translate-y-2 group"
+                            data-name={artist.nom.toLowerCase()}
+                            data-date={artist.dateObj}
+                            data-genre={artist.genre.toLowerCase()}
+                        >
+                            <div class="relative h-72 overflow-hidden bg-gray-100">
+                                <img
+                                    src={artist.image}
+                                    alt={artist.nom}
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    onerror="this.src='/lazy_birds_artist.avif'"
+                                />
+                                <span
+                                    class={`absolute top-5 right-5 px-6 py-2.5 rounded-full text-[0.95rem] font-bold tracking-wider uppercase shadow-lg ${artist.couleurGenre}`}
+                                >
+                                    {artist.genre}
+                                </span>
+                            </div>
+                            <div class="p-8 flex flex-col flex-grow">
+                                <h3 class="text-3xl font-black text-black mb-8 font-title">
+                                    {artist.nom}
+                                </h3>
+
+                                <div class="flex flex-col gap-4 mb-8 text-gray-600 font-medium text-[1.1rem]">
+                                    <span class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-full bg-[var(--color-bg-warm)] flex items-center justify-center shrink-0">
+                                            <img
+                                                src="/vector_date_card_artist.svg"
+                                                alt="Date"
+                                                class="w-5 h-5 text-[var(--color-primary)]"
+                                            />
+                                        </div>
+                                        {artist.dateText}
+                                    </span>
+                                    <span class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-full bg-[var(--color-bg-warm)] flex items-center justify-center shrink-0">
+                                            <img
+                                                src="/vector_place_card_artist.svg"
+                                                alt="Lieu"
+                                                class="w-5 h-5 text-[var(--color-primary)]"
+                                            />
+                                        </div>
+                                        {artist.scene}
+                                    </span>
+                                </div>
+
+                                <div class="mt-auto pt-8 border-t border-gray-100">
+                                    <a
+                                        href={`/artistes/${artist.id}`}
+                                        class="inline-flex items-center gap-2 text-[var(--color-primary)] font-black uppercase tracking-wider hover:text-orange-600 transition-colors text-lg"
+                                    >
+                                        En savoir plus
+                                        <svg
+                                            class="w-6 h-6 transition-transform group-hover:translate-x-1"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2.5"
+                                                d="M17 8l4 4m0 0l-4 4m4-4H3"
+                                            />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                    ))
+                }
+            </div>
+        </section>
+
+        <section class="max-w-[1200px] mx-auto mt-12 px-6">
+            <div
+                class="bg-[var(--color-bg-warm)] rounded-[30px] p-12 md:p-20 text-center flex flex-col items-center gap-8 shadow-inner"
+            >
+                <div
+                    class="w-24 h-24 bg-[var(--color-accent)] rounded-full flex items-center justify-center shadow-lg"
+                >
+                    <img
+                        src="/vector_music_artist.svg"
+                        alt="Musique"
+                        class="w-12 h-12 brightness-0 invert"
+                    />
+                </div>
+                <h2
+                    class="text-4xl md:text-5xl font-black text-black font-title uppercase tracking-tighter"
+                >
+                    Ne manquez aucun concert
+                </h2>
+                <p class="text-xl text-gray-700 font-medium mb-4 max-w-2xl">
+                    Consultez le programme complet pour organiser votre weekend
+                    musical et ne rien rater des festivités.
+                </p>
+                <a
+                    href="/programme"
+                    class="inline-block px-12 py-5 bg-[var(--color-primary)] text-white font-black font-title text-lg uppercase tracking-wider rounded-full hover:brightness-110 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
+                >
+                    Voir le programme complet
+                </a>
+            </div>
+        </section>
+    </main>
+</Layout>
+
+<script>
+    const select = document.getElementById("sort-artists");
+    const grid = document.getElementById("artists-grid");
+
+    if (select && grid) {
+        select.addEventListener("change", (e) => {
+            const sortBy = (e.target as HTMLSelectElement).value;
+            const cards = Array.from(grid.querySelectorAll(".artist-card"));
+
+            cards.sort((a, b) => {
+                if (sortBy === "name") {
+                    return (a.getAttribute("data-name") || "").localeCompare(
+                        b.getAttribute("data-name") || "",
+                    );
+                } else if (sortBy === "genre") {
+                    return (a.getAttribute("data-genre") || "").localeCompare(
+                        b.getAttribute("data-genre") || "",
+                    );
+                } else {
+                    return (
+                        parseInt(a.getAttribute("data-date") || "0") -
+                        parseInt(b.getAttribute("data-date") || "0")
+                    );
+                }
+            });
+
+            cards.forEach((card) => grid.appendChild(card));
+        });
+    }
+</script>
