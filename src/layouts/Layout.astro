@@ -1,5 +1,9 @@
 ---
+// IMPORTATIONS GLOBALES
+// On importe le fichier CSS principal pour qu'il s'applique à tout le site
 import "../styles/global.css";
+
+// On importe les composants réutilisables d'en-tête et de pied de page
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 ---
@@ -8,7 +12,9 @@ import Footer from "../components/Footer.astro";
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
+
 		<title>La Fanfa'Comtoise</title>
+
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
@@ -16,6 +22,7 @@ import Footer from "../components/Footer.astro";
 			rel="stylesheet"
 		/>
 	</head>
+
 	<body>
 		<Header />
 
@@ -28,51 +35,60 @@ import Footer from "../components/Footer.astro";
 </html>
 
 <style is:global>
+	/* VARIABLES CSS - Pour garder des couleurs uniformes partout */
 	:root {
 		--color-orange: #f29c1f;
 		--color-yellow: #fbbf24;
 		--color-green: #8fd26a;
 		--color-white: #ffffff;
 		--color-black: #111111;
-		--color-bg-warm: #f6f3e9;
+		--color-bg-warm: #f6f3e9; /* La couleur de fond beige/chaude de ton site */
 		--font-primary: "Inter", sans-serif;
 	}
 
+	/* RESET CSS DE BASE - Pour que tous les navigateurs réagissent pareil */
 	*,
 	*::before,
 	*::after {
-		box-sizing: border-box;
-		font-family: var(--font-primary) !important;
+		box-sizing: border-box; /* Évite que les bordures agrandissent les blocs */
+		font-family: var(
+			--font-primary
+		) !important; /* Force la police Inter partout */
 	}
 
+	/* Permet un défilement doux quand on clique sur une ancre (ex: #contact) */
 	html {
 		scroll-behavior: smooth;
 	}
 
+	/* STYLE DU CORPS DE LA PAGE */
 	body {
 		margin: 0;
 		padding: 0;
 		background-color: var(--color-bg-warm);
 		color: var(--color-black);
-		line-height: 1.4;
-		-webkit-font-smoothing: antialiased;
+		line-height: 1.4; /* Espacement entre les lignes de texte */
+		-webkit-font-smoothing: antialiased; /* Rend les polices plus nettes sur les écrans Apple */
 	}
 
+	/* STYLE DES TITRES PRINCIPAUX */
 	h1,
 	h2,
 	h3 {
-		font-weight: 800;
-		line-height: 1.1;
+		font-weight: 800; /* Police très grasse par défaut */
+		line-height: 1.1; /* Titres plus resserrés que le texte normal */
 		margin: 0;
 	}
 
+	/* SUPPRESSION DU SOULIGNEMENT DES LIENS */
 	a {
 		text-decoration: none;
-		color: inherit;
+		color: inherit; /* Le lien prend la couleur du texte qui l'entoure */
 	}
 
+	/* IMAGE RESPONSIVE PAR DÉFAUT */
 	img {
-		max-width: 100%;
+		max-width: 100%; /* L'image ne débordera jamais de son conteneur */
 		display: block;
 	}
 </style>

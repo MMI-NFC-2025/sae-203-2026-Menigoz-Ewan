@@ -1,22 +1,34 @@
 ---
+// IMPORTATIONS
 import Layout from "../../layouts/Layout.astro";
 import PocketBase from "pocketbase";
 
+// 1. GÉNÉRATION DES ROUTES DYNAMIQUES (Le cœur de la page)
+// Cette fonction getStaticPaths() est obligatoire dans un fichier [id].astro.
+// Elle dit à Astro : "Va chercher tous les artistes dans la base de données,
+// et crée une page web pour chacun d'eux."
 export async function getStaticPaths() {
     const pb = new PocketBase("http://127.0.0.1:8090");
 
+    // On récupère tous les artistes, en incluant les données de la scène associée (expand)
     const records = await pb.collection("artistes").getFullList({
         expand: "scene_id",
     });
 
+    // Pour chaque artiste, on retourne son ID (pour l'URL de la page)
+    // et toutes ses données (props) pour les utiliser plus bas.
     return records.map((record) => ({
         params: { id: record.id },
         props: { artiste: record },
     }));
 }
 
+// 2. RÉCUPÉRATION DES DONNÉES DE L'ARTISTE ACTUEL
+// On extrait les données de l'artiste spécifique à la page en train d'être générée
 const { artiste } = Astro.props;
 
+// 3. FORMATAGE DE LA DATE ET DE L'HEURE
+// On transforme la date brute de PocketBase en un format propre pour la France
 const dateObj = new Date(artiste.date_passage);
 const formatterJour = new Intl.DateTimeFormat("fr-FR", {
     day: "numeric",
@@ -28,18 +40,25 @@ const formatterHeure = new Intl.DateTimeFormat("fr-FR", {
     minute: "2-digit",
 });
 
-const dateTexte = formatterJour.format(dateObj);
-const heureTexte = formatterHeure.format(dateObj);
+const dateTexte = formatterJour.format(dateObj); // Ex: "15 juillet 2026"
+const heureTexte = formatterHeure.format(dateObj); // Ex: "20:30"
 
+// 4. NETTOYAGE DES DONNÉES (Genres et Scène)
+// Si l'artiste a plusieurs genres, on les sépare par une virgule.
 const genreAffiche = Array.isArray(artiste.genre)
     ? artiste.genre.join(", ")
     : artiste.genre || "Non défini";
+
+// On récupère le nom de la scène (grâce au "expand" fait plus haut)
 const sceneNom = artiste.expand?.scene_id?.nom || "Scène à confirmer";
 
+// 5. GESTION DES IMAGES (Lien direct vers PocketBase)
+// Construction de l'URL pour l'image principale. Si elle n'existe pas, on met une image par défaut.
 const imageUrl = artiste.image_principale
     ? `http://127.0.0.1:8090/api/files/${artiste.collectionId}/${artiste.id}/${artiste.image_principale}`
     : "/hero_artist.avif";
 
+// Construction des URLs pour la galerie photos (image multiple)
 const galeriePhotos = Array.isArray(artiste.galerie_photos)
     ? artiste.galerie_photos
     : [];
@@ -48,12 +67,14 @@ const galerieUrls = galeriePhotos.map(
         `http://127.0.0.1:8090/api/files/${artiste.collectionId}/${artiste.id}/${photo}`,
 );
 
+// 6. GESTION DES COULEURS DES BADGES
+// Une petite fonction pour donner une couleur différente au badge selon le style musical
 const getColorByGenre = (genre: string | string[]) => {
     const g = String(genre || "").toLowerCase();
 
-    if (g.includes("jazz")) return "bg-[var(--color-secondary)] text-black";
-    if (g.includes("fanfare")) return "bg-[var(--color-primary)] text-white";
-    return "bg-[var(--color-accent)] text-white";
+    if (g.includes("jazz")) return "bg-[var(--color-secondary)] text-black"; // Jaune
+    if (g.includes("fanfare")) return "bg-[var(--color-primary)] text-white"; // Orange
+    return "bg-[var(--color-accent)] text-white"; // Vert par défaut
 };
 
 const couleurGenre = getColorByGenre(artiste.genre);
@@ -75,12 +96,13 @@ const couleurGenre = getColorByGenre(artiste.genre);
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
-                    ><path
+                >
+                    <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="2.5"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg
-                >
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
                 Retour aux artistes
             </a>
         </div>
@@ -149,8 +171,9 @@ const couleurGenre = getColorByGenre(artiste.genre);
                     </div>
                 </div>
             </section>
-            <br />
-            <br />
+
+            <br /><br />
+
             <section class="mt-20">
                 <div class="flex items-center gap-4 mb-8">
                     <span class="w-3 h-3 rounded-full bg-[var(--color-primary)]"
@@ -172,8 +195,8 @@ const couleurGenre = getColorByGenre(artiste.genre);
                     />
                 </div>
             </section>
-            <br />
-            <br />
+
+            <br /><br />
 
             {
                 galerieUrls.length > 0 && (
@@ -197,7 +220,9 @@ const couleurGenre = getColorByGenre(artiste.genre);
                     </section>
                 )
             }
+
             <br /><br />
+
             <section
                 class="mt-24 bg-[var(--color-bg-warm)] rounded-[30px] p-8 md:p-12 shadow-inner"
             >
@@ -281,8 +306,8 @@ const couleurGenre = getColorByGenre(artiste.genre);
                     </a>
                 </div>
             </section>
-            <br />
-            <br />
+
+            <br /><br />
         </div>
     </main>
 </Layout>

@@ -1,5 +1,5 @@
 ---
-
+// Espace réservé pour la logique serveur ou les imports (vide pour le moment)
 ---
 
 <header
@@ -112,20 +112,28 @@
 </nav>
 
 <script>
+    //Récupération des éléments HTML (boutons et conteneur du menu)
     const openBtn = document.querySelector("#menu-open-btn");
     const closeBtn = document.querySelector("#menu-close-btn");
     const nav = document.querySelector("#main-nav");
 
+    //Vérifier que les éléments existent bien sur la page pour éviter les erreurs
     if (openBtn && closeBtn && nav) {
+        // ACTION : Quand on clique sur le bouton Burger
         openBtn.addEventListener("click", () => {
+            // Fait glisser le menu dans l'écran (retire translate-x-full, ajoute translate-x-0)
             nav.classList.remove("translate-x-full");
             nav.classList.add("translate-x-0");
+            // Empêche le site de défiler (scroller) en arrière-plan quand le menu est ouvert
             document.body.classList.add("overflow-hidden");
         });
 
+        // ACTION : Quand on clique sur la Croix
         closeBtn.addEventListener("click", () => {
+            // Repousse le menu hors de l'écran vers la droite
             nav.classList.remove("translate-x-0");
             nav.classList.add("translate-x-full");
+            // Réactive le défilement normal du site
             document.body.classList.remove("overflow-hidden");
         });
     }
