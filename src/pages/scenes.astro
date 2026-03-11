@@ -1,0 +1,286 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PocketBase from "pocketbase";
+
+const pb = new PocketBase("http://127.0.0.1:8090");
+
+const scenes = await pb.collection("scenes").getFullList({
+    sort: "created",
+});
+
+const artistesRecords = await pb.collection("artistes").getList(1, 4, {
+    sort: "-created",
+});
+const artistes = artistesRecords.items;
+---
+
+<Layout title="Les Scènes - La Fanfa'Comtoise">
+    <main class="main bg-[var(--color-bg-light)] pb-24 min-h-screen">
+        <section class="page-header py-12">
+            <div
+                class="page-header__content max-w-[1200px] mx-auto px-6 text-center"
+            >
+                <h1
+                    class="page-header__title text-5xl md:text-6xl font-black text-[var(--color-primary)] font-title uppercase tracking-tighter mb-4"
+                >
+                    Les Scènes
+                </h1>
+                <p
+                    class="page-header__subtitle text-xl text-gray-700 font-medium"
+                >
+                    3 scènes uniques au cœur du centre-ville historique de
+                    Montbéliard
+                </p>
+            </div>
+        </section>
+
+        <section class="scenes-section max-w-[1200px] mx-auto px-6 mt-12">
+            <h2
+                class="scenes-section__title text-3xl md:text-4xl font-black text-black font-title uppercase tracking-tight mb-12 flex items-center gap-4"
+            >
+                <span class="w-3 h-3 rounded-full bg-[var(--color-primary)]"
+                ></span>
+                Les Scènes du Festival
+            </h2>
+
+            <div class="flex flex-col gap-12">
+                {
+                    scenes.map((scene, index) => (
+                        <article class="bg-white rounded-[20px] shadow-sm border border-gray-100 flex flex-col overflow-hidden transition-transform hover:-translate-y-2 duration-300">
+                            <div class="w-full h-[300px] md:h-[400px] shrink-0">
+                                <img
+                                    src={
+                                        scene.image
+                                            ? `http://127.0.0.1:8090/api/files/${scene.collectionId}/${scene.id}/${scene.image}`
+                                            : "/assets/images/hero-du-site.avif"
+                                    }
+                                    alt={`Scène ${scene.nom}`}
+                                    class="w-full h-full object-cover"
+                                />
+                            </div>
+                            <div class="p-6 md:p-8 flex flex-col">
+                                <div class="flex items-center gap-2 text-[var(--color-primary)] font-bold text-sm mb-3 uppercase tracking-wider">
+                                    <img
+                                        src="/vector_place_card_artist.svg"
+                                        alt="Scène"
+                                        class="w-4 h-4"
+                                    />
+                                    Scène {index + 1}
+                                </div>
+
+                                <h3 class="text-3xl font-black text-black font-title mb-4">
+                                    {scene.nom}
+                                </h3>
+
+                                <div
+                                    class="text-gray-600 leading-relaxed mb-6 text-sm md:text-base prose max-w-none"
+                                    set:html={scene.description}
+                                />
+
+                                <div class="flex flex-col gap-3 mb-8 text-gray-700 text-sm md:text-base font-medium">
+                                    <div class="flex items-center gap-3">
+                                        <img
+                                            src="/vector_place_card_artist.svg"
+                                            alt="Localisation"
+                                            class="w-5 h-5 text-[var(--color-primary)]"
+                                        />
+                                        <span>{scene.lieu}</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <img
+                                            src="/vector_accessibility_festival.svg"
+                                            alt="Capacité"
+                                            class="w-5 h-5 text-[var(--color-primary)]"
+                                        />
+                                        <span>
+                                            Capacité : {scene.capacite}{" "}
+                                            personnes
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <a
+                                    href={`/scenes/${scene.id}`}
+                                    class="text-[var(--color-primary)] font-bold flex items-center gap-2 hover:brightness-75 transition-all w-max"
+                                >
+                                    En savoir plus
+                                    <span class="text-lg leading-none">→</span>
+                                </a>
+                            </div>
+                        </article>
+                    ))
+                }
+            </div>
+        </section>
+
+        <br /><br />
+
+        <section class="discover mt-24 bg-[var(--color-bg-warm)] py-16">
+            <div class="max-w-[1200px] mx-auto px-6">
+                <h2
+                    class="discover__title text-3xl md:text-4xl font-black text-black font-title uppercase tracking-tight mb-12 text-center"
+                >
+                    Les artistes du festival
+                </h2>
+
+                <div class="carousel relative">
+                    <div
+                        class="carousel__container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+                    >
+                        {
+                            artistes.map((artiste) => (
+                                <article class="carousel__slide bg-white p-6 rounded-[20px] shadow-sm text-center border border-gray-100 hover:-translate-y-2 transition-transform">
+                                    <div class="carousel__card flex flex-col items-center">
+                                        <div class="w-24 h-24 rounded-full overflow-hidden mb-4 border-4 border-[var(--color-bg-light)] shadow-sm shrink-0">
+                                            <img
+                                                src={
+                                                    artiste.image_principale
+                                                        ? `http://127.0.0.1:8090/api/files/${artiste.collectionId}/${artiste.id}/${artiste.image_principale}`
+                                                        : "/hero_artist.avif"
+                                                }
+                                                alt={artiste.nom}
+                                                class="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                        <h3 class="carousel__card-title text-xl font-black text-black font-title uppercase mb-2">
+                                            {artiste.nom}
+                                        </h3>
+                                        <p class="carousel__card-description text-sm text-gray-500 font-medium mb-6">
+                                            {Array.isArray(artiste.genre)
+                                                ? artiste.genre.join(", ")
+                                                : artiste.genre ||
+                                                  "À découvrir"}
+                                        </p>
+                                        <a
+                                            href={`/artistes/${artiste.id}`}
+                                            class="carousel__link text-[var(--color-primary)] font-bold uppercase text-sm tracking-wider hover:text-black transition-colors"
+                                        >
+                                            Voir plus →
+                                        </a>
+                                    </div>
+                                </article>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <br /><br />
+
+        <section class="good-to-know mt-24 max-w-[1200px] mx-auto px-6">
+            <h2
+                class="good-to-know__title text-3xl md:text-4xl font-black text-black font-title uppercase tracking-tight mb-12 flex items-center gap-4"
+            >
+                <span class="w-3 h-3 rounded-full bg-[var(--color-secondary)]"
+                ></span>
+                Bon à savoir
+            </h2>
+
+            <div
+                class="good-to-know__grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+            >
+                <div
+                    class="good-to-know__item bg-white p-8 rounded-[20px] shadow-sm border border-gray-100 flex flex-col items-center text-center md:items-start md:text-left"
+                >
+                    <div
+                        class="good-to-know__item-header flex flex-col items-center md:items-start mb-4"
+                    >
+                        <img
+                            src="/vector_place_card_artist.svg"
+                            alt="Acoustique"
+                            class="good-to-know__item-icon w-10 h-10 mb-4 text-[var(--color-primary)]"
+                        />
+                        <h3
+                            class="good-to-know__item-title text-xl font-black text-black font-title uppercase tracking-wide"
+                        >
+                            Acoustique
+                        </h3>
+                    </div>
+                    <p
+                        class="good-to-know__item-description text-gray-600 font-medium leading-relaxed"
+                    >
+                        Toutes nos scènes sont équipées d'une sonorisation
+                        professionnelle pour une qualité audio optimale.
+                    </p>
+                </div>
+
+                <div
+                    class="good-to-know__item bg-white p-8 rounded-[20px] shadow-sm border border-gray-100 flex flex-col items-center text-center md:items-start md:text-left"
+                >
+                    <div
+                        class="good-to-know__item-header flex flex-col items-center md:items-start mb-4"
+                    >
+                        <img
+                            src="/vector_accessibility_festival.svg"
+                            alt="Accessibilité"
+                            class="good-to-know__item-icon w-10 h-10 mb-4 text-[var(--color-primary)]"
+                        />
+                        <h3
+                            class="good-to-know__item-title text-xl font-black text-black font-title uppercase tracking-wide"
+                        >
+                            Accessibilité
+                        </h3>
+                    </div>
+                    <p
+                        class="good-to-know__item-description text-gray-600 font-medium leading-relaxed"
+                    >
+                        Accès PMR sur toutes les scènes. Zones de stationnement
+                        réservées accessibles à proximité immédiate.
+                    </p>
+                </div>
+
+                <div
+                    class="good-to-know__item bg-white p-8 rounded-[20px] shadow-sm border border-gray-100 flex flex-col items-center text-center md:items-start md:text-left"
+                >
+                    <div
+                        class="good-to-know__item-header flex flex-col items-center md:items-start mb-4"
+                    >
+                        <img
+                            src="/vector_convivialite_festival.svg"
+                            alt="Détente"
+                            class="good-to-know__item-icon w-10 h-10 mb-4 text-[var(--color-primary)]"
+                        />
+                        <h3
+                            class="good-to-know__item-title text-xl font-black text-black font-title uppercase tracking-wide"
+                        >
+                            Espaces détente
+                        </h3>
+                    </div>
+                    <p
+                        class="good-to-know__item-description text-gray-600 font-medium leading-relaxed"
+                    >
+                        Des zones de repos aménagées autour de chaque scène
+                        ainsi que des espaces pique-nique pour votre confort.
+                    </p>
+                </div>
+
+                <div
+                    class="good-to-know__item bg-white p-8 rounded-[20px] shadow-sm border border-gray-100 flex flex-col items-center text-center md:items-start md:text-left"
+                >
+                    <div
+                        class="good-to-know__item-header flex flex-col items-center md:items-start mb-4"
+                    >
+                        <img
+                            src="/vector_plate_program.svg"
+                            alt="Restauration"
+                            class="good-to-know__item-icon w-10 h-10 mb-4 text-[var(--color-primary)]"
+                        />
+                        <h3
+                            class="good-to-know__item-title text-xl font-black text-black font-title uppercase tracking-wide"
+                        >
+                            Restauration
+                        </h3>
+                    </div>
+                    <p
+                        class="good-to-know__item-description text-gray-600 font-medium leading-relaxed"
+                    >
+                        Stands de restauration locale et bio à proximité de
+                        chaque scène. Éco-cup d'utilisation réglementée.
+                    </p>
+                </div>
+            </div>
+        </section>
+        <br /><br />
+    </main>
+</Layout>

@@ -1,0 +1,288 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PocketBase from "pocketbase";
+
+export async function getStaticPaths() {
+    const pb = new PocketBase("http://127.0.0.1:8090");
+
+    const records = await pb.collection("artistes").getFullList({
+        expand: "scene_id",
+    });
+
+    return records.map((record) => ({
+        params: { id: record.id },
+        props: { artiste: record },
+    }));
+}
+
+const { artiste } = Astro.props;
+
+const dateObj = new Date(artiste.date_passage);
+const formatterJour = new Intl.DateTimeFormat("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+});
+const formatterHeure = new Intl.DateTimeFormat("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
+});
+
+const dateTexte = formatterJour.format(dateObj);
+const heureTexte = formatterHeure.format(dateObj);
+
+const genreAffiche = Array.isArray(artiste.genre)
+    ? artiste.genre.join(", ")
+    : artiste.genre || "Non défini";
+const sceneNom = artiste.expand?.scene_id?.nom || "Scène à confirmer";
+
+const imageUrl = artiste.image_principale
+    ? `http://127.0.0.1:8090/api/files/${artiste.collectionId}/${artiste.id}/${artiste.image_principale}`
+    : "/hero_artist.avif";
+
+const galeriePhotos = Array.isArray(artiste.galerie_photos)
+    ? artiste.galerie_photos
+    : [];
+const galerieUrls = galeriePhotos.map(
+    (photo) =>
+        `http://127.0.0.1:8090/api/files/${artiste.collectionId}/${artiste.id}/${photo}`,
+);
+
+const getColorByGenre = (genre: string | string[]) => {
+    const g = String(genre || "").toLowerCase();
+
+    if (g.includes("jazz")) return "bg-[var(--color-secondary)] text-black";
+    if (g.includes("fanfare")) return "bg-[var(--color-primary)] text-white";
+    return "bg-[var(--color-accent)] text-white";
+};
+
+const couleurGenre = getColorByGenre(artiste.genre);
+---
+
+<Layout title={`${artiste.nom} - La Fanfa'Comtoise`}>
+    <main
+        class="w-full bg-[var(--color-bg-light)] font-sans pb-24 min-h-screen"
+    >
+        <div
+            class="w-full max-w-[1200px] mx-auto px-6 pt-8 pb-4 flex justify-start"
+        >
+            <a
+                href="/artistes"
+                class="inline-flex items-center gap-3 text-gray-500 font-bold uppercase tracking-wider hover:text-[var(--color-primary)] transition-colors text-sm md:text-base group whitespace-nowrap"
+            >
+                <svg
+                    class="w-6 h-6 transition-transform group-hover:-translate-x-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    ><path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2.5"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg
+                >
+                Retour aux artistes
+            </a>
+        </div>
+
+        <div class="max-w-[1200px] mx-auto px-6">
+            <section
+                class="bg-white rounded-[30px] shadow-sm border border-gray-100 flex flex-col md:flex-row gap-8 md:gap-12 p-6 md:p-8 overflow-hidden items-center"
+            >
+                <div
+                    class="w-full md:w-1/2 h-[350px] md:h-[450px] rounded-[20px] overflow-hidden shrink-0"
+                >
+                    <img
+                        src={imageUrl}
+                        alt={artiste.nom}
+                        class="w-full h-full object-cover"
+                        onerror="this.src='/hero_artist.avif'"
+                    />
+                </div>
+
+                <div
+                    class="w-full md:w-1/2 flex flex-col items-center text-center py-4"
+                >
+                    <div class="mb-6">
+                        <span
+                            class={`inline-block px-6 py-2.5 rounded-full text-sm font-bold tracking-wider uppercase shadow-sm ${couleurGenre}`}
+                        >
+                            {genreAffiche}
+                        </span>
+                    </div>
+
+                    <h1
+                        class="text-5xl md:text-6xl font-black text-black font-title uppercase tracking-tighter mb-8 leading-none"
+                    >
+                        {artiste.nom}
+                    </h1>
+
+                    <div class="flex flex-col items-center gap-4">
+                        <div
+                            class="flex items-center gap-4 text-gray-700 font-medium text-lg"
+                        >
+                            <div
+                                class="w-12 h-12 rounded-full bg-[var(--color-bg-warm)] flex items-center justify-center shrink-0"
+                            >
+                                <img
+                                    src="/vector_date_card_artist.svg"
+                                    alt="Date"
+                                    class="w-5 h-5 text-[var(--color-primary)]"
+                                />
+                            </div>
+                            <span>{dateTexte} à {heureTexte}</span>
+                        </div>
+                        <div
+                            class="flex items-center gap-4 text-gray-700 font-medium text-lg"
+                        >
+                            <div
+                                class="w-12 h-12 rounded-full bg-[var(--color-bg-warm)] flex items-center justify-center shrink-0"
+                            >
+                                <img
+                                    src="/vector_place_card_artist.svg"
+                                    alt="Lieu"
+                                    class="w-5 h-5 text-[var(--color-primary)]"
+                                />
+                            </div>
+                            <span>{sceneNom}</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <br />
+            <br />
+            <section class="mt-20">
+                <div class="flex items-center gap-4 mb-8">
+                    <span class="w-3 h-3 rounded-full bg-[var(--color-primary)]"
+                    ></span>
+                    <h2
+                        class="text-3xl md:text-4xl font-black text-black font-title uppercase tracking-tight"
+                    >
+                        À propos de {artiste.nom}
+                    </h2>
+                </div>
+
+                <div
+                    class="bg-white rounded-[30px] p-8 md:p-12 shadow-sm border border-gray-100"
+                >
+                    <div
+                        class="prose max-w-none text-gray-700 text-lg leading-relaxed font-medium"
+                        set:html={artiste.description ||
+                            "La description de cet artiste sera bientôt disponible."}
+                    />
+                </div>
+            </section>
+            <br />
+            <br />
+
+            {
+                galerieUrls.length > 0 && (
+                    <section class="mt-20">
+                        <h2 class="text-3xl md:text-4xl font-black text-black font-title uppercase tracking-tight mb-8 text-center md:text-left">
+                            Galerie photos
+                        </h2>
+
+                        <div class="flex flex-wrap justify-center gap-6">
+                            {galerieUrls.map((url) => (
+                                <figure class="rounded-[20px] overflow-hidden h-[250px] w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] max-w-[380px] shadow-sm bg-gray-100 group shrink-0">
+                                    <img
+                                        src={url}
+                                        alt={`Photo de ${artiste.nom} en concert`}
+                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        loading="lazy"
+                                    />
+                                </figure>
+                            ))}
+                        </div>
+                    </section>
+                )
+            }
+            <br /><br />
+            <section
+                class="mt-24 bg-[var(--color-bg-warm)] rounded-[30px] p-8 md:p-12 shadow-inner"
+            >
+                <h2
+                    class="text-3xl font-black text-black font-title uppercase tracking-tight mb-10 text-center md:text-left"
+                >
+                    Informations du concert
+                </h2>
+
+                <div
+                    class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch"
+                >
+                    <div
+                        class="flex flex-col items-start text-left bg-white p-8 rounded-2xl shadow-sm border border-gray-100 h-full w-full"
+                    >
+                        <img
+                            src="/vector_date_card_artist.svg"
+                            alt="Date"
+                            class="w-8 h-8 mb-6"
+                        />
+                        <h3
+                            class="text-[0.9rem] font-black text-gray-800 uppercase tracking-widest mb-3 font-title"
+                        >
+                            Date & Heure
+                        </h3>
+                        <p
+                            class="text-2xl font-black text-black font-title mb-1"
+                        >
+                            {dateTexte}
+                        </p>
+                        <p
+                            class="text-xl font-black text-[var(--color-primary)] font-title"
+                        >
+                            {heureTexte}
+                        </p>
+                    </div>
+
+                    <div
+                        class="flex flex-col items-start text-left bg-white p-8 rounded-2xl shadow-sm border border-gray-100 h-full w-full"
+                    >
+                        <img
+                            src="/vector_place_card_artist.svg"
+                            alt="Scène"
+                            class="w-8 h-8 mb-6"
+                        />
+                        <h3
+                            class="text-[0.9rem] font-black text-gray-800 uppercase tracking-widest mb-3 font-title"
+                        >
+                            Scène
+                        </h3>
+                        <p class="text-2xl font-black text-black font-title">
+                            {sceneNom}
+                        </p>
+                    </div>
+
+                    <div
+                        class="flex flex-col items-start text-left bg-white p-8 rounded-2xl shadow-sm border border-gray-100 h-full w-full"
+                    >
+                        <img
+                            src="/vector_music_note_artist.svg"
+                            alt="Genre"
+                            class="w-8 h-8 mb-6"
+                        />
+                        <h3
+                            class="text-[0.9rem] font-black text-gray-800 uppercase tracking-widest mb-3 font-title"
+                        >
+                            Genre
+                        </h3>
+                        <p class="text-2xl font-black text-black font-title">
+                            {genreAffiche}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-12 flex justify-center">
+                    <a
+                        href="/programme"
+                        class="inline-block px-12 py-5 bg-[var(--color-primary)] text-white font-black font-title uppercase tracking-wider rounded-full hover:brightness-110 transition-all shadow-md text-center whitespace-nowrap text-lg"
+                    >
+                        Voir tout le programme
+                    </a>
+                </div>
+            </section>
+            <br />
+            <br />
+        </div>
+    </main>
+</Layout>
