@@ -56,43 +56,57 @@
             <a
                 href="/"
                 class="text-white text-2xl font-medium hover:text-[#f6b44b] transition-colors"
-                >Accueil</a>
+                >Accueil</a
+            >
         </li>
         <li>
             <a
                 href="/festival"
                 class="text-white text-2xl font-medium hover:text-[#f6b44b] transition-colors"
-                >Le Festival</a>
+                >Le Festival</a
+            >
         </li>
         <li>
             <a
                 href="/artistes"
                 class="text-white text-2xl font-medium hover:text-[#f6b44b] transition-colors"
-                >Artistes</a>
+                >Artistes</a
+            >
         </li>
         <li>
             <a
                 href="/programme"
                 class="text-white text-2xl font-medium hover:text-[#f6b44b] transition-colors"
-                >Programme</a>
+                >Programme</a
+            >
         </li>
         <li>
             <a
                 href="/scenes"
                 class="text-white text-2xl font-medium hover:text-[#f6b44b] transition-colors"
-                >Scènes</a>
+                >Scènes</a
+            >
         </li>
         <li>
             <a
                 href="/infos-pratiques"
                 class="text-white text-2xl font-medium hover:text-[#f6b44b] transition-colors"
-                >Infos Pratiques</a>
+                >Infos Pratiques</a
+            >
         </li>
         <li>
             <a
                 href="/contact"
                 class="text-white text-2xl font-medium hover:text-[#f6b44b] transition-colors"
-                >Contact</a>
+                >Contact</a
+            >
+        </li>
+        <li>
+            <a
+                href="/gestion"
+                class="text-white text-2xl font-medium hover:text-[#f6b44b] transition-colors"
+                >Gestion du festival</a
+            >
         </li>
     </ul>
 </nav>
@@ -103,14 +117,12 @@
     const nav = document.querySelector("#main-nav");
 
     if (openBtn && closeBtn && nav) {
-        // OUVRE LE MENU (Glisse de droite à gauche)
         openBtn.addEventListener("click", () => {
             nav.classList.remove("translate-x-full");
             nav.classList.add("translate-x-0");
-            document.body.classList.add("overflow-hidden"); // Empêche le scroll derrière
+            document.body.classList.add("overflow-hidden");
         });
 
-        // FERME LE MENU (Glisse de gauche à droite)
         closeBtn.addEventListener("click", () => {
             nav.classList.remove("translate-x-0");
             nav.classList.add("translate-x-full");

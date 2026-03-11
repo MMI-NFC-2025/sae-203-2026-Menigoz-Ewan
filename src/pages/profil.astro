@@ -1,0 +1,158 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Mon Profil - La Fanfa'Comtoise">
+    <main class="max-w-[600px] mx-auto my-20 px-6">
+        <h1 class="text-4xl font-black font-title uppercase mb-8 text-center">
+            Mon Profil
+        </h1>
+
+        <div
+            id="messageBox"
+            class="hidden p-4 mb-6 rounded-lg font-bold text-center"
+        >
+        </div>
+
+        <div
+            id="profileContainer"
+            class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hidden"
+        >
+            <form id="profileForm" class="flex flex-col gap-6">
+                <div>
+                    <label
+                        class="block text-sm font-bold text-gray-500 uppercase mb-2"
+                        >Email (non modifiable)</label
+                    >
+                    <input
+                        type="text"
+                        id="userEmail"
+                        disabled
+                        class="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-400 cursor-not-allowed"
+                    />
+                </div>
+
+                <div>
+                    <label
+                        for="username"
+                        class="block text-sm font-bold text-gray-700 uppercase mb-2"
+                        >Nom d'utilisateur</label
+                    >
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        required
+                        class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] outline-none"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    id="submitBtn"
+                    class="bg-[var(--color-primary)] text-white font-black py-4 rounded-full uppercase tracking-wider hover:brightness-110 transition-all shadow-md"
+                >
+                    Enregistrer les modifications
+                </button>
+            </form>
+
+            <hr class="my-8 border-gray-100" />
+
+            <div class="flex justify-between items-center">
+                <p id="loggedInAs" class="text-gray-500 text-sm italic"></p>
+                <a href="/login" class="text-red-500 font-bold hover:underline"
+                    >Aller à la connexion</a
+                >
+            </div>
+        </div>
+
+        <div id="notLoggedInMessage" class="text-center hidden">
+            <p class="mb-4 text-lg">
+                Vous devez être connecté pour voir cette page.
+            </p>
+            <a
+                href="/login"
+                class="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
+                >Se connecter</a
+            >
+        </div>
+    </main>
+</Layout>
+
+<script>
+    import PocketBase from "pocketbase";
+
+    // Initialisation
+    const pb = new PocketBase("http://127.0.0.1:8090");
+
+    // Récupération des éléments du DOM
+    const profileContainer = document.getElementById("profileContainer");
+    const notLoggedInMessage = document.getElementById("notLoggedInMessage");
+    const profileForm = document.getElementById(
+        "profileForm",
+    ) as HTMLFormElement;
+    const messageBox = document.getElementById("messageBox");
+    const submitBtn = document.getElementById("submitBtn");
+
+    const userEmailInput = document.getElementById(
+        "userEmail",
+    ) as HTMLInputElement;
+    const usernameInput = document.getElementById(
+        "username",
+    ) as HTMLInputElement;
+    const loggedInAsText = document.getElementById("loggedInAs");
+
+    // Vérifier l'état de connexion au chargement
+    if (pb.authStore.isValid) {
+        // Utilisateur connecté : on affiche le formulaire et on le pré-remplit
+        if (profileContainer) profileContainer.classList.remove("hidden");
+        const user = pb.authStore.model;
+
+        if (user && userEmailInput && usernameInput && loggedInAsText) {
+            userEmailInput.value = user.email;
+            // On utilise user.name car c'est le champ que tu utilises dans PocketBase
+            usernameInput.value = user.name || user.username || "";
+            loggedInAsText.textContent = `Connecté en tant que ${user.email}`;
+        }
+    } else {
+        // Utilisateur non connecté : on affiche un message d'erreur
+        if (notLoggedInMessage) notLoggedInMessage.classList.remove("hidden");
+    }
+
+    // Gérer la soumission du formulaire
+    profileForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!pb.authStore.isValid || !pb.authStore.model) return;
+
+        if (messageBox) messageBox.classList.add("hidden");
+        if (submitBtn) submitBtn.textContent = "Enregistrement...";
+
+        const newUsername = usernameInput.value;
+
+        try {
+            // Mise à jour de l'utilisateur dans PocketBase
+            await pb.collection("users").update(pb.authStore.model.id, {
+                name: newUsername,
+            });
+
+            // Succès
+            if (messageBox) {
+                messageBox.textContent = "Profil mis à jour avec succès !";
+                messageBox.className =
+                    "p-4 mb-6 rounded-lg font-bold text-center bg-green-100 text-green-800 block";
+            }
+        } catch (error) {
+            // Erreur
+            console.error("Erreur lors de la mise à jour :", error);
+            if (messageBox) {
+                messageBox.textContent = "Erreur lors de la mise à jour.";
+                messageBox.className =
+                    "p-4 mb-6 rounded-lg font-bold text-center bg-red-100 text-red-800 block";
+            }
+        } finally {
+            if (submitBtn)
+                submitBtn.textContent = "Enregistrer les modifications";
+        }
+    });
+</script>
