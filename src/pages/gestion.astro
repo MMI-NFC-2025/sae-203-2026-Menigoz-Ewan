@@ -1,7 +1,11 @@
 ---
+// IMPORTATIONS (Côté Serveur)
 import Layout from "../layouts/Layout.astro";
 import { pb } from "../../backend/backend.mjs";
 
+// On récupère la liste des scènes au chargement de la page.
+// Pourquoi ? Pour pouvoir les injecter dans le menu déroulant (le <select>)
+// du formulaire "Artiste", afin de lier facilement un artiste à une scène.
 const scenes = await pb.collection("scenes").getFullList();
 ---
 
@@ -18,6 +22,7 @@ const scenes = await pb.collection("scenes").getFullList();
                 <h2 class="text-2xl font-bold mb-6 text-[var(--color-primary)]">
                     Gérer les Scènes
                 </h2>
+
                 <div
                     id="msgScene"
                     style="display: none;"
@@ -139,6 +144,7 @@ const scenes = await pb.collection("scenes").getFullList();
                 <h2 class="text-2xl font-bold mb-6 text-[var(--color-primary)]">
                     Gérer les Artistes
                 </h2>
+
                 <div
                     id="msgArtiste"
                     style="display: none;"
@@ -257,6 +263,8 @@ const scenes = await pb.collection("scenes").getFullList();
                                 >-- Sélectionner une scène --</option
                             >
                             {
+                                // On génère dynamiquement les options du menu déroulant
+                                // grâce à la requête "scenes" faite tout en haut du fichier
                                 scenes.map((scene) => (
                                     <option value={scene.id}>
                                         {scene.nom}
@@ -327,22 +335,32 @@ const scenes = await pb.collection("scenes").getFullList();
 <script>
     import PocketBase from "pocketbase";
 
+    // Reconnexion à PocketBase côté client (pense au VPS pour la prod !)
     const pb = new PocketBase("http://127.0.0.1:8090");
 
+    // ==========================================
+    // LOGIQUE DU FORMULAIRE "SCÈNES"
+    // ==========================================
     const formScene = document.getElementById("formScene") as HTMLFormElement;
     const msgScene = document.getElementById("msgScene");
     const btnScene = document.getElementById("btnScene");
 
     formScene?.addEventListener("submit", async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Bloque le rechargement de la page
 
+        // Réinitialisation de l'affichage
         if (msgScene) msgScene.style.display = "none";
         if (btnScene) btnScene.textContent = "Enregistrement...";
 
+        // Récupération de l'ID (s'il y en a un)
         const id = (document.getElementById("id_scene") as HTMLInputElement)
             .value;
+
+        // FormData capture automatiquement tous les champs du formulaire qui ont un attribut 'name'
         const formData = new FormData(formScene);
 
+        // Ajustement spécifique pour la Checkbox :
+        // PocketBase attend un texte ("true" ou "false"), on force donc la conversion.
         formData.set(
             "accessible_pmr",
             (
@@ -350,6 +368,9 @@ const scenes = await pb.collection("scenes").getFullList();
             ).checked.toString(),
         );
 
+        // NETTOYAGE DES FICHIERS VIDES
+        // Si on modifie une scène sans toucher à l'image, le champ file est envoyé vide.
+        // Cela effacerait l'image existante dans PocketBase ! On supprime donc les fichiers vides de l'envoi.
         const keysToDelete = [];
         for (let [key, value] of formData.entries()) {
             if (value instanceof File && value.size === 0) {
@@ -358,8 +379,10 @@ const scenes = await pb.collection("scenes").getFullList();
         }
         keysToDelete.forEach((key) => formData.delete(key));
 
+        // ENVOI À POCKETBASE
         try {
             if (id) {
+                // Si un ID est fourni -> UPDATE
                 await pb.collection("scenes").update(id, formData);
                 if (msgScene) {
                     msgScene.textContent = "Scène modifiée avec succès !";
@@ -367,15 +390,17 @@ const scenes = await pb.collection("scenes").getFullList();
                         "p-3 mb-4 rounded text-sm font-bold bg-green-100 text-green-800 block";
                 }
             } else {
+                // Si pas d'ID -> CREATE (Nouvelle scène)
                 await pb.collection("scenes").create(formData);
                 if (msgScene) {
                     msgScene.textContent = "Scène créée avec succès !";
                     msgScene.className =
                         "p-3 mb-4 rounded text-sm font-bold bg-green-100 text-green-800 block";
                 }
-                formScene.reset();
+                formScene.reset(); // On vide le formulaire après création
             }
         } catch (error) {
+            // Gestion des erreurs (ex: format invalide, droits d'accès PB...)
             if (msgScene) {
                 msgScene.textContent =
                     "Erreur lors de l'opération (Vérifiez les permissions API).";
@@ -383,10 +408,14 @@ const scenes = await pb.collection("scenes").getFullList();
                     "p-3 mb-4 rounded text-sm font-bold bg-red-100 text-red-800 block";
             }
         } finally {
+            // Quoi qu'il arrive, on remet le texte du bouton à la normale
             if (btnScene) btnScene.textContent = "Enregistrer la scène";
         }
     });
 
+    // ==========================================
+    // LOGIQUE DU FORMULAIRE "ARTISTES"
+    // ==========================================
     const formArtiste = document.getElementById(
         "formArtiste",
     ) as HTMLFormElement;
@@ -403,15 +432,19 @@ const scenes = await pb.collection("scenes").getFullList();
             .value;
         const formData = new FormData(formArtiste);
 
+        // FORMATAGE DE LA DATE POUR POCKETBASE
+        // PocketBase attend le format "YYYY-MM-DD HH:mm:ss"
+        // Le HTML datetime-local envoie "YYYY-MM-DDTHH:mm". On remplace le "T" par un espace et on ajoute les secondes.
         const dateInput = formData.get("date_passage");
         if (dateInput) {
             const formattedDate =
                 dateInput.toString().replace("T", " ") + ":00";
             formData.set("date_passage", formattedDate);
         } else {
-            formData.delete("date_passage");
+            formData.delete("date_passage"); // On évite d'envoyer une date vide
         }
 
+        // NETTOYAGE DES FICHIERS VIDES (Même logique que pour les scènes)
         const keysToDelete = [];
         for (let [key, value] of formData.entries()) {
             if (value instanceof File && value.size === 0) {
@@ -420,6 +453,7 @@ const scenes = await pb.collection("scenes").getFullList();
         }
         keysToDelete.forEach((key) => formData.delete(key));
 
+        // ENVOI À POCKETBASE
         try {
             if (id) {
                 await pb.collection("artistes").update(id, formData);
@@ -448,4 +482,500 @@ const scenes = await pb.collection("scenes").getFullList();
             if (btnArtiste) btnArtiste.textContent = "Enregistrer l'artiste";
         }
     });
-</script>
+</script>--- // IMPORTATIONS (Côté Serveur) import Layout from
+"../layouts/Layout.astro"; import {pb} from "../../backend/backend.mjs"; // On récupère
+la liste des scènes au chargement de la page. // Pourquoi ? Pour pouvoir les injecter
+dans le menu déroulant (le <select
+    >) // du formulaire "Artiste", afin de lier facilement un artiste à une
+    scène. const scenes = await pb.collection("scenes").getFullList(); ---
+
+    <Layout title="Gestion des données - La Fanfa'Comtoise">
+        <main class="max-w-[1200px] mx-auto my-12 px-6">
+            <h1
+                class="text-4xl font-black font-title uppercase mb-8 text-center"
+            >
+                Espace de Gestion
+            </h1>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 h-fit"
+                >
+                    <h2
+                        class="text-2xl font-bold mb-6 text-[var(--color-primary)]"
+                    >
+                        Gérer les Scènes
+                    </h2>
+
+                    <div
+                        id="msgScene"
+                        style="display: none;"
+                        class="p-3 mb-4 rounded text-sm font-bold"
+                    >
+                    </div>
+
+                    <form id="formScene" class="flex flex-col gap-4">
+                        <div>
+                            <label
+                                for="id_scene"
+                                class="font-bold text-sm block mb-1 text-gray-500"
+                                >ID (Laisser vide pour créer)</label
+                            >
+                            <input
+                                type="text"
+                                id="id_scene"
+                                class="w-full p-3 border border-gray-300 rounded focus:ring-2 outline-none"
+                                placeholder="Ex: byszdeelhfzz70m"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="nom_scene"
+                                class="font-bold text-sm block mb-1"
+                                >Nom de la scène *</label
+                            >
+                            <input
+                                type="text"
+                                id="nom_scene"
+                                name="nom"
+                                required
+                                class="w-full p-3 border rounded focus:ring-2 outline-none"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="lieu_scene"
+                                class="font-bold text-sm block mb-1">Lieu</label
+                            >
+                            <input
+                                type="text"
+                                id="lieu_scene"
+                                name="lieu"
+                                class="w-full p-3 border rounded focus:ring-2 outline-none"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="capacite_scene"
+                                class="font-bold text-sm block mb-1"
+                                >Capacité</label
+                            >
+                            <input
+                                type="number"
+                                id="capacite_scene"
+                                name="capacite"
+                                class="w-full p-3 border rounded focus:ring-2 outline-none"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="image_scene"
+                                class="font-bold text-sm block mb-1"
+                                >Image</label
+                            >
+                            <input
+                                type="file"
+                                id="image_scene"
+                                name="image"
+                                accept="image/*"
+                                class="w-full p-2 border rounded focus:ring-2 outline-none"
+                            />
+                        </div>
+
+                        <div class="flex items-center gap-2 mt-2 mb-2">
+                            <input
+                                type="checkbox"
+                                id="accessible_pmr"
+                                name="accessible_pmr"
+                                class="w-5 h-5 accent-[var(--color-primary)] cursor-pointer"
+                            />
+                            <label
+                                for="accessible_pmr"
+                                class="font-bold text-sm cursor-pointer"
+                                >Accessible PMR</label
+                            >
+                        </div>
+
+                        <div>
+                            <label
+                                for="description_scene"
+                                class="font-bold text-sm block mb-1"
+                                >Description</label
+                            >
+                            <textarea
+                                id="description_scene"
+                                name="description"
+                                rows="4"
+                                class="w-full p-3 border rounded focus:ring-2 outline-none resize-y"
+                            ></textarea>
+                        </div>
+
+                        <button
+                            type="submit"
+                            id="btnScene"
+                            class="mt-4 bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700 transition"
+                        >
+                            Enregistrer la scène
+                        </button>
+                    </form>
+                </div>
+
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 h-fit"
+                >
+                    <h2
+                        class="text-2xl font-bold mb-6 text-[var(--color-primary)]"
+                    >
+                        Gérer les Artistes
+                    </h2>
+
+                    <div
+                        id="msgArtiste"
+                        style="display: none;"
+                        class="p-3 mb-4 rounded text-sm font-bold"
+                    >
+                    </div>
+
+                    <form id="formArtiste" class="flex flex-col gap-4">
+                        <div>
+                            <label
+                                for="id_artiste"
+                                class="font-bold text-sm block mb-1 text-gray-500"
+                                >ID (Laisser vide pour créer)</label
+                            >
+                            <input
+                                type="text"
+                                id="id_artiste"
+                                class="w-full p-3 border border-gray-300 rounded focus:ring-2 outline-none"
+                                placeholder="Ex: rasbv78cozlubo0"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="nom_artiste"
+                                class="font-bold text-sm block mb-1"
+                                >Nom de l'artiste *</label
+                            >
+                            <input
+                                type="text"
+                                id="nom_artiste"
+                                name="nom"
+                                required
+                                class="w-full p-3 border rounded focus:ring-2 outline-none"
+                            />
+                        </div>
+
+                        <div>
+                            <span class="font-bold text-sm block mb-1"
+                                >Genre musical (plusieurs choix possibles)</span
+                            >
+                            <div class="flex flex-wrap gap-4 mt-2">
+                                <label
+                                    class="flex items-center gap-2 cursor-pointer"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        name="genre"
+                                        value="jazz"
+                                        class="w-5 h-5 accent-[var(--color-primary)]"
+                                    />
+                                    Jazz
+                                </label>
+                                <label
+                                    class="flex items-center gap-2 cursor-pointer"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        name="genre"
+                                        value="fanfare"
+                                        class="w-5 h-5 accent-[var(--color-primary)]"
+                                    />
+                                    Fanfare
+                                </label>
+                                <label
+                                    class="flex items-center gap-2 cursor-pointer"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        name="genre"
+                                        value="soul"
+                                        class="w-5 h-5 accent-[var(--color-primary)]"
+                                    />
+                                    Soul
+                                </label>
+                                <label
+                                    class="flex items-center gap-2 cursor-pointer"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        name="genre"
+                                        value="musique de rue"
+                                        class="w-5 h-5 accent-[var(--color-primary)]"
+                                    />
+                                    Musique de rue
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                for="date_passage"
+                                class="font-bold text-sm block mb-1"
+                                >Date de passage</label
+                            >
+                            <input
+                                type="datetime-local"
+                                id="date_passage"
+                                name="date_passage"
+                                class="w-full p-3 border rounded focus:ring-2 outline-none"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="scene_id"
+                                class="font-bold text-sm block mb-1"
+                                >Scène associée</label
+                            >
+                            <select
+                                id="scene_id"
+                                name="scene_id"
+                                class="w-full p-3 border rounded focus:ring-2 outline-none"
+                            >
+                                <option value=""
+                                    >-- Sélectionner une scène --</option
+                                >
+                                {
+                                    // On génère dynamiquement les options du menu déroulant
+                                    // grâce à la requête "scenes" faite tout en haut du fichier
+                                    scenes.map((scene) => (
+                                        <option value={scene.id}>
+                                            {scene.nom}
+                                        </option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label
+                                for="image_principale"
+                                class="font-bold text-sm block mb-1"
+                                >Image principale</label
+                            >
+                            <input
+                                type="file"
+                                id="image_principale"
+                                name="image_principale"
+                                accept="image/*"
+                                class="w-full p-2 border rounded focus:ring-2 outline-none"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="galerie_photos"
+                                class="font-bold text-sm block mb-1"
+                                >Galerie photos</label
+                            >
+                            <input
+                                type="file"
+                                id="galerie_photos"
+                                name="galerie_photos"
+                                accept="image/*"
+                                multiple
+                                class="w-full p-2 border rounded focus:ring-2 outline-none"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="description_artiste"
+                                class="font-bold text-sm block mb-1"
+                                >Description</label
+                            >
+                            <textarea
+                                id="description_artiste"
+                                name="description"
+                                rows="4"
+                                class="w-full p-3 border rounded focus:ring-2 outline-none resize-y"
+                            ></textarea>
+                        </div>
+
+                        <button
+                            type="submit"
+                            id="btnArtiste"
+                            class="mt-4 bg-green-600 text-white font-bold py-3 rounded hover:bg-green-700 transition"
+                        >
+                            Enregistrer l'artiste
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </Layout>
+
+    <script>
+        import PocketBase from "pocketbase";
+
+        // Reconnexion à PocketBase côté client (pense au VPS pour la prod !)
+        const pb = new PocketBase("http://127.0.0.1:8090");
+
+        // ==========================================
+        // LOGIQUE DU FORMULAIRE "SCÈNES"
+        // ==========================================
+        const formScene = document.getElementById(
+            "formScene",
+        ) as HTMLFormElement;
+        const msgScene = document.getElementById("msgScene");
+        const btnScene = document.getElementById("btnScene");
+
+        formScene?.addEventListener("submit", async (e) => {
+            e.preventDefault(); // Bloque le rechargement de la page
+
+            // Réinitialisation de l'affichage
+            if (msgScene) msgScene.style.display = "none";
+            if (btnScene) btnScene.textContent = "Enregistrement...";
+
+            // Récupération de l'ID (s'il y en a un)
+            const id = (document.getElementById("id_scene") as HTMLInputElement)
+                .value;
+
+            // FormData capture automatiquement tous les champs du formulaire qui ont un attribut 'name'
+            const formData = new FormData(formScene);
+
+            // Ajustement spécifique pour la Checkbox :
+            // PocketBase attend un texte ("true" ou "false"), on force donc la conversion.
+            formData.set(
+                "accessible_pmr",
+                (
+                    document.getElementById(
+                        "accessible_pmr",
+                    ) as HTMLInputElement
+                ).checked.toString(),
+            );
+
+            // NETTOYAGE DES FICHIERS VIDES
+            // Si on modifie une scène sans toucher à l'image, le champ file est envoyé vide.
+            // Cela effacerait l'image existante dans PocketBase ! On supprime donc les fichiers vides de l'envoi.
+            const keysToDelete = [];
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File && value.size === 0) {
+                    keysToDelete.push(key);
+                }
+            }
+            keysToDelete.forEach((key) => formData.delete(key));
+
+            // ENVOI À POCKETBASE
+            try {
+                if (id) {
+                    // Si un ID est fourni -> UPDATE
+                    await pb.collection("scenes").update(id, formData);
+                    if (msgScene) {
+                        msgScene.textContent = "Scène modifiée avec succès !";
+                        msgScene.className =
+                            "p-3 mb-4 rounded text-sm font-bold bg-green-100 text-green-800 block";
+                    }
+                } else {
+                    // Si pas d'ID -> CREATE (Nouvelle scène)
+                    await pb.collection("scenes").create(formData);
+                    if (msgScene) {
+                        msgScene.textContent = "Scène créée avec succès !";
+                        msgScene.className =
+                            "p-3 mb-4 rounded text-sm font-bold bg-green-100 text-green-800 block";
+                    }
+                    formScene.reset(); // On vide le formulaire après création
+                }
+            } catch (error) {
+                // Gestion des erreurs (ex: format invalide, droits d'accès PB...)
+                if (msgScene) {
+                    msgScene.textContent =
+                        "Erreur lors de l'opération (Vérifiez les permissions API).";
+                    msgScene.className =
+                        "p-3 mb-4 rounded text-sm font-bold bg-red-100 text-red-800 block";
+                }
+            } finally {
+                // Quoi qu'il arrive, on remet le texte du bouton à la normale
+                if (btnScene) btnScene.textContent = "Enregistrer la scène";
+            }
+        });
+
+        // ==========================================
+        // LOGIQUE DU FORMULAIRE "ARTISTES"
+        // ==========================================
+        const formArtiste = document.getElementById(
+            "formArtiste",
+        ) as HTMLFormElement;
+        const msgArtiste = document.getElementById("msgArtiste");
+        const btnArtiste = document.getElementById("btnArtiste");
+
+        formArtiste?.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            if (msgArtiste) msgArtiste.style.display = "none";
+            if (btnArtiste) btnArtiste.textContent = "Enregistrement...";
+
+            const id = (
+                document.getElementById("id_artiste") as HTMLInputElement
+            ).value;
+            const formData = new FormData(formArtiste);
+
+            // FORMATAGE DE LA DATE POUR POCKETBASE
+            // PocketBase attend le format "YYYY-MM-DD HH:mm:ss"
+            // Le HTML datetime-local envoie "YYYY-MM-DDTHH:mm". On remplace le "T" par un espace et on ajoute les secondes.
+            const dateInput = formData.get("date_passage");
+            if (dateInput) {
+                const formattedDate =
+                    dateInput.toString().replace("T", " ") + ":00";
+                formData.set("date_passage", formattedDate);
+            } else {
+                formData.delete("date_passage"); // On évite d'envoyer une date vide
+            }
+
+            // NETTOYAGE DES FICHIERS VIDES (Même logique que pour les scènes)
+            const keysToDelete = [];
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File && value.size === 0) {
+                    keysToDelete.push(key);
+                }
+            }
+            keysToDelete.forEach((key) => formData.delete(key));
+
+            // ENVOI À POCKETBASE
+            try {
+                if (id) {
+                    await pb.collection("artistes").update(id, formData);
+                    if (msgArtiste) {
+                        msgArtiste.textContent =
+                            "Artiste modifié avec succès !";
+                        msgArtiste.className =
+                            "p-3 mb-4 rounded text-sm font-bold bg-green-100 text-green-800 block";
+                    }
+                } else {
+                    await pb.collection("artistes").create(formData);
+                    if (msgArtiste) {
+                        msgArtiste.textContent = "Artiste créé avec succès !";
+                        msgArtiste.className =
+                            "p-3 mb-4 rounded text-sm font-bold bg-green-100 text-green-800 block";
+                    }
+                    formArtiste.reset();
+                }
+            } catch (error) {
+                if (msgArtiste) {
+                    msgArtiste.textContent =
+                        "Erreur lors de l'opération (Vérifiez les permissions API).";
+                    msgArtiste.className =
+                        "p-3 mb-4 rounded text-sm font-bold bg-red-100 text-red-800 block";
+                }
+            } finally {
+                if (btnArtiste)
+                    btnArtiste.textContent = "Enregistrer l'artiste";
+            }
+        });
+    </script></select
+>

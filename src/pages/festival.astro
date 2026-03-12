@@ -1,4 +1,7 @@
 ---
+// IMPORTATION
+// On importe uniquement le Layout de base, car cette page est 100% statique
+// et n'a pas besoin de récupérer des données dynamiques dans la base de données.
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -16,6 +19,7 @@ import Layout from "../layouts/Layout.astro";
             >
                 <source src="/video_festival.mp4" type="video/mp4" />
             </video>
+
             <div class="absolute inset-0 bg-black/20 -z-10"></div>
 
             <div class="relative z-10 max-w-[800px] px-8 font-title">
@@ -213,8 +217,9 @@ import Layout from "../layouts/Layout.astro";
                     <a
                         href="/contact"
                         class="inline-block bg-[var(--color-primary)] text-white px-12 py-4 rounded-full font-black text-[1.1rem] transition-all hover:-translate-y-1 shadow-lg hover:shadow-xl font-title uppercase tracking-wider"
-                        >Nous contacter</a
                     >
+                        Nous contacter
+                    </a>
                 </div>
             </div>
         </section>

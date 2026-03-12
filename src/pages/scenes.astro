@@ -1,16 +1,26 @@
 ---
+// IMPORTATIONS
 import Layout from "../layouts/Layout.astro";
 import PocketBase from "pocketbase";
 
+// 1. CONNEXION À POCKETBASE
+// (Rappel : à modifier par l'URL de ton VPS pour la prod)
 const pb = new PocketBase("http://127.0.0.1:8090");
 
+// 2. REQUÊTE N°1 : RÉCUPÉRER LES SCÈNES
+// On récupère toutes les scènes, triées par ordre de création
 const scenes = await pb.collection("scenes").getFullList({
     sort: "created",
 });
 
+// 3. REQUÊTE N°2 : RÉCUPÉRER UN APERÇU DES ARTISTES
+// On utilise getList(1, 4) pour ne récupérer QUE les 4 derniers artistes ajoutés
+// (sort: "-created" = tri décroissant, du plus récent au plus ancien)
+// Cela permet de créer le bloc "Les artistes du festival" sans surcharger la page
 const artistesRecords = await pb.collection("artistes").getList(1, 4, {
     sort: "-created",
 });
+// getList renvoie un objet paginé, on extrait juste le tableau d'items
 const artistes = artistesRecords.items;
 ---
 
@@ -45,11 +55,14 @@ const artistes = artistesRecords.items;
 
             <div class="flex flex-col gap-12">
                 {
+                    // Boucle sur le tableau "scenes" récupéré en haut
+                    // L'index (0, 1, 2...) est utilisé pour numéroter les scènes
                     scenes.map((scene, index) => (
                         <article class="bg-white rounded-[20px] shadow-sm border border-gray-100 flex flex-col overflow-hidden transition-transform hover:-translate-y-2 duration-300">
                             <div class="w-full h-[300px] md:h-[400px] shrink-0">
                                 <img
                                     src={
+                                        // Condition : Si la scène a une image, on crée son URL PocketBase. Sinon, image par défaut.
                                         scene.image
                                             ? `http://127.0.0.1:8090/api/files/${scene.collectionId}/${scene.id}/${scene.image}`
                                             : "/assets/images/hero-du-site.avif"
@@ -58,6 +71,7 @@ const artistes = artistesRecords.items;
                                     class="w-full h-full object-cover"
                                 />
                             </div>
+
                             <div class="p-6 md:p-8 flex flex-col">
                                 <div class="flex items-center gap-2 text-[var(--color-primary)] font-bold text-sm mb-3 uppercase tracking-wider">
                                     <img
@@ -128,6 +142,7 @@ const artistes = artistesRecords.items;
                         class="carousel__container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
                     >
                         {
+                            // Boucle sur les 4 artistes récupérés par getList()
                             artistes.map((artiste) => (
                                 <article class="carousel__slide bg-white p-6 rounded-[20px] shadow-sm text-center border border-gray-100 hover:-translate-y-2 transition-transform">
                                     <div class="carousel__card flex flex-col items-center">
@@ -142,15 +157,18 @@ const artistes = artistesRecords.items;
                                                 class="w-full h-full object-cover"
                                             />
                                         </div>
+
                                         <h3 class="carousel__card-title text-xl font-black text-black font-title uppercase mb-2">
                                             {artiste.nom}
                                         </h3>
+
                                         <p class="carousel__card-description text-sm text-gray-500 font-medium mb-6">
                                             {Array.isArray(artiste.genre)
                                                 ? artiste.genre.join(", ")
                                                 : artiste.genre ||
                                                   "À découvrir"}
                                         </p>
+
                                         <a
                                             href={`/artistes/${artiste.id}`}
                                             class="carousel__link text-[var(--color-primary)] font-bold uppercase text-sm tracking-wider hover:text-black transition-colors"

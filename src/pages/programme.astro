@@ -1,38 +1,49 @@
 ---
+// IMPORTATIONS
 import Layout from "../layouts/Layout.astro";
 import PocketBase from "pocketbase";
 
+// 1. CONNEXION ET REQUÊTE POCKETBASE
+// Pense à modifier cette URL avec celle de ton VPS pour la mise en production
 const pb = new PocketBase("http://127.0.0.1:8090");
 
+// Récupération de tous les artistes triés par date avec les infos de la scène associée
 const records = await pb.collection("artistes").getFullList({
     sort: "date_passage",
     expand: "scene_id",
 });
 
+// 2. CONFIGURATION DES FORMATTEURS DE DATES
+// Le programme nécessite d'afficher le Jour et l'Heure séparément
 const formatterJour = new Intl.DateTimeFormat("fr-FR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+    weekday: "long", // ex: "vendredi"
+    day: "numeric", // ex: "27"
+    month: "long", // ex: "juin"
+    year: "numeric", // ex: "2025"
 });
 const formatterHeure = new Intl.DateTimeFormat("fr-FR", {
     hour: "2-digit",
     minute: "2-digit",
 });
 
+// 3. FONCTION DE COULEUR DES BADGES SELON LE GENRE MUSICAL
 const getColorByGenre = (genre: string | string[]) => {
     const g = String(genre || "").toLowerCase();
 
-    if (g.includes("jazz")) return "bg-[var(--color-secondary)]";
-    if (g.includes("fanfare")) return "bg-[var(--color-primary)]";
-    return "bg-[var(--color-accent)]";
+    if (g.includes("jazz")) return "bg-[var(--color-secondary)]"; // Jaune
+    if (g.includes("fanfare")) return "bg-[var(--color-primary)]"; // Orange
+    return "bg-[var(--color-accent)]"; // Vert
 };
 
+// 4. NETTOYAGE ET PRÉPARATION DES DONNÉES DES CONCERTS
 const concerts = records.map((record) => {
     const dateObj = new Date(record.date_passage);
+
+    // Formatage du jour avec majuscule (ex: "Vendredi 27 juin 2025")
     const jourBrut = formatterJour.format(dateObj);
     const jourCapitalise = jourBrut.charAt(0).toUpperCase() + jourBrut.slice(1);
 
+    // Gestion de l'affichage du genre
     const genreAffiche = Array.isArray(record.genre)
         ? record.genre.join(", ")
         : record.genre || "Non défini";
@@ -48,6 +59,9 @@ const concerts = records.map((record) => {
     };
 });
 
+// 5. CRÉATION D'UNE LISTE DES JOURS UNIQUES
+// Le Set permet de retirer tous les doublons du tableau pour ne garder que les 3 jours du festival
+// (ex: ["Vendredi 27 juin 2025", "Samedi 28 juin 2025", "Dimanche 29 juin 2025"])
 const joursUniques = [...new Set(concerts.map((c) => c.jour))];
 ---
 
@@ -246,7 +260,9 @@ const joursUniques = [...new Set(concerts.map((c) => c.jour))];
             </div>
 
             {
+                // Boucle Principale : On itère sur les "joursUniques" (Vendredi, Samedi, Dimanche)
                 joursUniques.map((jour) => (
+                    // div "day-section" pour pouvoir masquer tout un jour entier en JS si aucun concert ne correspond
                     <div
                         class="mb-24 day-section"
                         data-day={jour.toLowerCase()}
@@ -264,8 +280,10 @@ const joursUniques = [...new Set(concerts.map((c) => c.jour))];
 
                         <div class="flex flex-col gap-6">
                             {concerts
+                                // Filtre crucial : on ne garde que les concerts dont le jour correspond au jour actuel de la boucle
                                 .filter((c) => c.jour === jour)
                                 .map((concert) => (
+                                    // Chaque carte a des "data-attributes" (data-artist, data-scene...) pour être ciblée par le JS de filtrage
                                     <article
                                         class="concert-card bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center gap-6 hover:shadow-md transition-shadow"
                                         data-artist={concert.artiste.toLowerCase()}
@@ -342,7 +360,6 @@ const joursUniques = [...new Set(concerts.map((c) => c.jour))];
                             </p>
                         </div>
                     </div>
-
                     <div
                         class="bg-white p-8 rounded-2xl text-center shadow-sm border border-gray-100 flex flex-col items-center gap-6"
                     >
@@ -366,7 +383,6 @@ const joursUniques = [...new Set(concerts.map((c) => c.jour))];
                             </p>
                         </div>
                     </div>
-
                     <div
                         class="bg-white p-8 rounded-2xl text-center shadow-sm border border-gray-100 flex flex-col items-center gap-6"
                     >
@@ -391,7 +407,6 @@ const joursUniques = [...new Set(concerts.map((c) => c.jour))];
                         </div>
                     </div>
                 </div>
-
                 <div class="text-center">
                     <a
                         href="/infos"
@@ -413,8 +428,9 @@ const joursUniques = [...new Set(concerts.map((c) => c.jour))];
 
     if (form) {
         form.addEventListener("submit", (e) => {
-            e.preventDefault();
+            e.preventDefault(); // On évite le rechargement de la page
 
+            // 1. Récupération des valeurs saisies/sélectionnées par l'utilisateur (tout en minuscules)
             const searchArtist = (
                 document.getElementById("search-artist") as HTMLInputElement
             ).value.toLowerCase();
@@ -428,10 +444,13 @@ const joursUniques = [...new Set(concerts.map((c) => c.jour))];
                 document.getElementById("filter-scene") as HTMLSelectElement
             ).value.toLowerCase();
 
-            let visibleCount = 0;
+            let visibleCount = 0; // Compteur pour savoir si on a trouvé quelque chose
 
+            // 2. Traitement de CHAQUE concert (carte HTML)
             concerts.forEach((card) => {
                 const element = card as HTMLElement;
+
+                // Récupération des données cachées dans les attributs data-* du HTML
                 const artist = element.dataset.artist || "";
                 const genre = element.dataset.genre || "";
                 const scene = element.dataset.scene || "";
@@ -439,9 +458,10 @@ const joursUniques = [...new Set(concerts.map((c) => c.jour))];
                     element.closest(".day-section")?.getAttribute("data-day") ||
                     "";
 
+                // Vérification des concordances
                 const matchArtist =
                     artist.includes(searchArtist) ||
-                    genre.includes(searchArtist);
+                    genre.includes(searchArtist); // Le champ texte cherche artiste OU genre
                 const matchDay =
                     searchDay === "" || cardDay.includes(searchDay);
                 const matchGenre =
@@ -449,16 +469,21 @@ const joursUniques = [...new Set(concerts.map((c) => c.jour))];
                 const matchScene =
                     searchScene === "" || scene.includes(searchScene);
 
+                // Si TOUS les critères sont remplis (OU s'ils sont vides) -> on affiche
                 if (matchArtist && matchDay && matchGenre && matchScene) {
                     element.style.display = "flex";
                     visibleCount++;
                 } else {
+                    // Sinon, on cache la carte avec du CSS inline
                     element.style.display = "none";
                 }
             });
 
+            // 3. Masquage des jours "vides"
+            // Si on cherche un artiste qui ne joue que le vendredi, il faut cacher les titres "Samedi" et "Dimanche"
             daySections.forEach((section) => {
                 const element = section as HTMLElement;
+                // On compte combien de cartes sont visibles dans CE jour précis
                 const visibleCards = element.querySelectorAll(
                     '.concert-card[style="display: flex;"]',
                 );
@@ -470,12 +495,13 @@ const joursUniques = [...new Set(concerts.map((c) => c.jour))];
                     visibleCards.length === 0 &&
                     visibleCardsWithoutStyle.length === 0
                 ) {
-                    element.style.display = "none";
+                    element.style.display = "none"; // On cache la journée entière
                 } else {
-                    element.style.display = "block";
+                    element.style.display = "block"; // On la montre
                 }
             });
 
+            // 4. Gestion du message "Aucun résultat"
             if (noResultMessage) {
                 if (visibleCount === 0) {
                     noResultMessage.classList.remove("hidden");
@@ -485,8 +511,11 @@ const joursUniques = [...new Set(concerts.map((c) => c.jour))];
             }
         });
 
+        // 5. Gestion du bouton "Réinitialiser"
         form.addEventListener("reset", () => {
+            // setTimeout permet d'attendre que le formulaire se vide réellement avant d'agir
             setTimeout(() => {
+                // On réaffiche absolument tout
                 concerts.forEach((card) => {
                     (card as HTMLElement).style.display = "flex";
                     (card as HTMLElement).removeAttribute("style");

@@ -1,30 +1,45 @@
 ---
+// IMPORTATIONS
 import Layout from "../../layouts/Layout.astro";
 import PocketBase from "pocketbase";
 
+// 1. GÉNÉRATION DES ROUTES DYNAMIQUES
+// Création d'une URL unique pour chaque scène existante
 export async function getStaticPaths() {
     const pb = new PocketBase("http://127.0.0.1:8090");
 
+    // Récupération de toutes les scènes de la base de données
     const records = await pb.collection("scenes").getFullList();
 
+    // Pour chaque scène trouvée, on crée une route avec son ID
+    // et on prépare les données (props) associées
     return records.map((record) => ({
         params: { id: record.id },
         props: { scene: record },
     }));
 }
 
+// 2. RÉCUPÉRATION DES DONNÉES DE LA SCÈNE
 const { scene } = Astro.props;
+
+// 3. SECONDE REQUÊTE : RÉCUPÉRER LES ARTISTES DE CETTE SCÈNE
 const pb = new PocketBase("http://127.0.0.1:8090");
 
+// Filtrage pour ne récupérer QUE les artistes liés à l'ID de la scène actuelle
+// On trie également par date de passage croissante
 const artistes = await pb.collection("artistes").getFullList({
     filter: `scene_id = "${scene.id}"`,
     sort: "+date_passage",
 });
 
+// 4. GESTION DE L'IMAGE DE LA SCÈNE
+// Lien dynamique vers l'image PocketBase, ou image par défaut si elle est absente
 const imageUrl = scene.image
     ? `http://127.0.0.1:8090/api/files/${scene.collectionId}/${scene.id}/${scene.image}`
     : "/assets/images/hero-du-site.avif";
 
+// 5. FONCTION OUTIL : FORMATAGE DES DATES
+// Transforme la date brute en texte lisible (ex: "15 juillet 2026 à 20:30")
 const formatteDate = (dateString) => {
     const dateObj = new Date(dateString);
     const formatterJour = new Intl.DateTimeFormat("fr-FR", {
@@ -77,6 +92,7 @@ const formatteDate = (dateString) => {
                         alt={scene.nom}
                         class="w-full h-full object-cover"
                     />
+
                     <div
                         class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8 md:p-12"
                     >
@@ -85,11 +101,13 @@ const formatteDate = (dateString) => {
                         >
                             La Fanfa'Comtoise
                         </span>
+
                         <h1
-                            class="text-5xl md:text-6xl font-black text-white font-title uppercase tracking-tighter mb-6 leading-none [-webkit-text-stroke:2px_black]"
+                            class="text-5xl md:text-6xl font-black text-white font-title uppercase tracking-tighter mb-6 leading-none"
                         >
                             {scene.nom}
                         </h1>
+
                         <div
                             class="flex flex-wrap gap-6 text-white font-medium text-lg"
                         >
@@ -99,9 +117,7 @@ const formatteDate = (dateString) => {
                                     alt="Localisation"
                                     class="w-6 h-6 filter brightness-0 invert"
                                 />
-                                <span class="[-webkit-text-stroke:1px_black]"
-                                    >{scene.lieu}</span
-                                >
+                                <span>{scene.lieu}</span>
                             </div>
                             <div class="flex items-center gap-3">
                                 <img
@@ -109,7 +125,7 @@ const formatteDate = (dateString) => {
                                     alt="Capacité"
                                     class="w-6 h-6 filter brightness-0 invert"
                                 />
-                                <span class="[-webkit-text-stroke:1px_black]"
+                                <span
                                     >Capacité : {scene.capacite} personnes</span
                                 >
                             </div>
@@ -150,6 +166,7 @@ const formatteDate = (dateString) => {
                         Caractéristiques
                     </h2>
                 </div>
+
                 <div
                     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
                 >
@@ -304,7 +321,7 @@ const formatteDate = (dateString) => {
                     )
                 }
             </section>
-            <br><br>
+            <br /><br />
         </div>
     </main>
 </Layout>

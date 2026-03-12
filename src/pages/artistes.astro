@@ -1,14 +1,19 @@
 ---
+// IMPORTATIONS
 import Layout from "../layouts/Layout.astro";
 import PocketBase from "pocketbase";
 
+// 1. CONNEXION ET REQUÊTE POCKETBASE
+// Remplace 127.0.0.1 par l'URL de ton VPS quand tu seras en production !
 const pb = new PocketBase("http://127.0.0.1:8090");
 
+// On récupère TOUS les artistes, classés par date, avec les infos de leur scène (expand)
 const records = await pb.collection("artistes").getFullList({
     sort: "date_passage",
     expand: "scene_id",
 });
 
+// 2. CONFIGURATION DU FORMAT DE DATE
 const formatterDate = new Intl.DateTimeFormat("fr-FR", {
     day: "numeric",
     month: "long",
@@ -17,29 +22,38 @@ const formatterDate = new Intl.DateTimeFormat("fr-FR", {
     minute: "2-digit",
 });
 
+// 3. FONCTION DE COULEUR DES BADGES SELON LE GENRE MUSICAL
 const getColorByGenre = (genre: string | string[]) => {
     const g = String(genre || "").toLowerCase();
 
-    if (g.includes("jazz")) return "bg-[var(--color-secondary)] text-black";
-    if (g.includes("fanfare")) return "bg-[var(--color-primary)] text-white";
-    return "bg-[var(--color-accent)] text-white";
+    if (g.includes("jazz")) return "bg-[var(--color-secondary)] text-black"; // Jaune
+    if (g.includes("fanfare")) return "bg-[var(--color-primary)] text-white"; // Orange
+    return "bg-[var(--color-accent)] text-white"; // Vert par défaut
 };
 
+// 4. NETTOYAGE ET PRÉPARATION DES DONNÉES
+// La fonction .map() prend le tableau brut (records) venant de PocketBase
+// et le transforme en un nouveau tableau (artistes) plus facile à utiliser dans le HTML
 const artistes = records.map((record) => {
+    // Formatage de la date ("15 juillet 2026 à 20:30")
     const dateObj = new Date(record.date_passage);
     const dateFormatee = formatterDate.format(dateObj).replace(",", " à");
+
+    // Gestion du genre (tableau ou chaîne simple)
     const genreAffiche = Array.isArray(record.genre)
         ? record.genre.join(", ")
         : record.genre || "Non défini";
 
+    // Gestion de l'image (si absente, image par défaut)
     const imageUrl = record.image_principale
         ? `http://127.0.0.1:8090/api/files/${record.collectionId}/${record.id}/${record.image_principale}`
         : "/lazy_birds_artist.avif";
 
+    // Ce qu'on retourne (le "colis" final) pour chaque artiste
     return {
         id: record.id,
         nom: record.nom,
-        dateObj: dateObj.getTime(),
+        dateObj: dateObj.getTime(), // Chiffre pur pour faciliter le tri par date en JS
         dateText: dateFormatee,
         scene: record.expand?.scene_id?.nom || "Scène à confirmer",
         genre: genreAffiche,
@@ -136,7 +150,9 @@ const artistes = records.map((record) => {
                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
             >
                 {
+                    // Boucle pour créer une carte par artiste
                     artistes.map((artist) => (
+                        // Les attributs "data-..." sont cachés mais essentiels pour que le script JS de tri fonctionne
                         <article
                             class="artist-card bg-white rounded-[20px] overflow-hidden shadow-sm border border-gray-100 flex flex-col hover:shadow-xl transition-all hover:-translate-y-2 group"
                             data-name={artist.nom.toLowerCase()}
@@ -156,6 +172,7 @@ const artistes = records.map((record) => {
                                     {artist.genre}
                                 </span>
                             </div>
+
                             <div class="p-8 flex flex-col flex-grow">
                                 <h3 class="text-3xl font-black text-black mb-8 font-title">
                                     {artist.nom}
@@ -246,24 +263,31 @@ const artistes = records.map((record) => {
 </Layout>
 
 <script>
+    // 1. Récupération du menu déroulant et de la grille des cartes
     const select = document.getElementById("sort-artists");
     const grid = document.getElementById("artists-grid");
 
     if (select && grid) {
+        // 2. Action au changement de valeur du menu déroulant
         select.addEventListener("change", (e) => {
             const sortBy = (e.target as HTMLSelectElement).value;
+            // On transforme la liste des cartes HTML en un vrai tableau JavaScript pour pouvoir le trier
             const cards = Array.from(grid.querySelectorAll(".artist-card"));
 
+            // 3. Logique de tri selon la valeur sélectionnée
             cards.sort((a, b) => {
                 if (sortBy === "name") {
+                    // Tri alphabétique (localeCompare est parfait pour les mots)
                     return (a.getAttribute("data-name") || "").localeCompare(
                         b.getAttribute("data-name") || "",
                     );
                 } else if (sortBy === "genre") {
+                    // Tri alphabétique par genre musical
                     return (a.getAttribute("data-genre") || "").localeCompare(
                         b.getAttribute("data-genre") || "",
                     );
                 } else {
+                    // Tri numérique par date (on compare les timestamps calculés plus haut)
                     return (
                         parseInt(a.getAttribute("data-date") || "0") -
                         parseInt(b.getAttribute("data-date") || "0")
@@ -271,6 +295,8 @@ const artistes = records.map((record) => {
                 }
             });
 
+            // 4. On réinsère les cartes dans la grille dans leur nouvel ordre
+            // (appendChild déplace l'élément s'il existe déjà, sans le cloner)
             cards.forEach((card) => grid.appendChild(card));
         });
     }

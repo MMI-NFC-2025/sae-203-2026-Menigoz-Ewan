@@ -1,4 +1,5 @@
 ---
+// IMPORTATION
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -22,8 +23,9 @@ import Layout from "../layouts/Layout.astro";
                 <div>
                     <label
                         class="block text-sm font-bold text-gray-500 uppercase mb-2"
-                        >Email (non modifiable)</label
                     >
+                        Email (non modifiable)
+                    </label>
                     <input
                         type="text"
                         id="userEmail"
@@ -36,8 +38,9 @@ import Layout from "../layouts/Layout.astro";
                     <label
                         for="username"
                         class="block text-sm font-bold text-gray-700 uppercase mb-2"
-                        >Nom d'utilisateur</label
                     >
+                        Nom d'utilisateur
+                    </label>
                     <input
                         type="text"
                         id="username"
@@ -73,8 +76,9 @@ import Layout from "../layouts/Layout.astro";
             <a
                 href="/login"
                 class="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
-                >Se connecter</a
             >
+                Se connecter
+            </a>
         </div>
     </main>
 </Layout>
@@ -82,10 +86,10 @@ import Layout from "../layouts/Layout.astro";
 <script>
     import PocketBase from "pocketbase";
 
-    // Initialisation
-    const pb = new PocketBase("http://127.0.0.1:8090");
+    // 1. Initialisation de la connexion à PocketBase
+    const pb = new PocketBase("http://127.0.0.1:8090"); // Pense au VPS pour la mise en ligne !
 
-    // Récupération des éléments du DOM
+    // 2. Récupération des éléments HTML (DOM)
     const profileContainer = document.getElementById("profileContainer");
     const notLoggedInMessage = document.getElementById("notLoggedInMessage");
     const profileForm = document.getElementById(
@@ -102,48 +106,60 @@ import Layout from "../layouts/Layout.astro";
     ) as HTMLInputElement;
     const loggedInAsText = document.getElementById("loggedInAs");
 
-    // Vérifier l'état de connexion au chargement
+    // ==============================================================
+    // LOGIQUE D'AFFICHAGE AU CHARGEMENT DE LA PAGE
+    // ==============================================================
+    // pb.authStore.isValid permet de savoir instantanément si un utilisateur a une session active
     if (pb.authStore.isValid) {
-        // Utilisateur connecté : on affiche le formulaire et on le pré-remplit
+        // L'utilisateur EST connecté : On affiche le formulaire
         if (profileContainer) profileContainer.classList.remove("hidden");
+
+        // On récupère les données de l'utilisateur connecté stockées localement par PocketBase
         const user = pb.authStore.model;
 
+        // On pré-remplit les champs du formulaire avec ses données
         if (user && userEmailInput && usernameInput && loggedInAsText) {
             userEmailInput.value = user.email;
-            // On utilise user.name car c'est le champ que tu utilises dans PocketBase
+            // On vérifie le champ 'name' ou 'username' selon la configuration de la collection "users"
             usernameInput.value = user.name || user.username || "";
             loggedInAsText.textContent = `Connecté en tant que ${user.email}`;
         }
     } else {
-        // Utilisateur non connecté : on affiche un message d'erreur
+        // L'utilisateur N'EST PAS connecté : On affiche le message d'erreur
         if (notLoggedInMessage) notLoggedInMessage.classList.remove("hidden");
     }
 
-    // Gérer la soumission du formulaire
+    // ==============================================================
+    // LOGIQUE DE SOUMISSION DU FORMULAIRE (Mise à jour du profil)
+    // ==============================================================
     profileForm?.addEventListener("submit", async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Bloque le rechargement de la page
 
+        // Sécurité : si la session a expiré entre temps, on coupe l'action
         if (!pb.authStore.isValid || !pb.authStore.model) return;
 
+        // Réinitialisation de l'affichage
         if (messageBox) messageBox.classList.add("hidden");
         if (submitBtn) submitBtn.textContent = "Enregistrement...";
 
+        // On récupère le nouveau nom tapé
         const newUsername = usernameInput.value;
 
         try {
-            // Mise à jour de l'utilisateur dans PocketBase
+            // Requête d'UPDATE vers la collection "users" de PocketBase
+            // On cible spécifiquement l'ID de l'utilisateur actuellement connecté (pb.authStore.model.id)
             await pb.collection("users").update(pb.authStore.model.id, {
                 name: newUsername,
             });
 
-            // Succès
+            // Succès : Affichage du message vert
             if (messageBox) {
                 messageBox.textContent = "Profil mis à jour avec succès !";
                 messageBox.className =
                     "p-4 mb-6 rounded-lg font-bold text-center bg-green-100 text-green-800 block";
             }
         } catch (error) {
-            // Erreur
+            // Erreur : Affichage du message rouge (ex: nom déjà pris si champ unique)
             console.error("Erreur lors de la mise à jour :", error);
             if (messageBox) {
                 messageBox.textContent = "Erreur lors de la mise à jour.";
@@ -151,6 +167,7 @@ import Layout from "../layouts/Layout.astro";
                     "p-4 mb-6 rounded-lg font-bold text-center bg-red-100 text-red-800 block";
             }
         } finally {
+            // Rétablissement du texte du bouton
             if (submitBtn)
                 submitBtn.textContent = "Enregistrer les modifications";
         }

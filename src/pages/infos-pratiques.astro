@@ -1,4 +1,6 @@
 ---
+// IMPORTATION
+// Uniquement le Layout de base, page 100% statique
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -234,6 +236,7 @@ import Layout from "../layouts/Layout.astro";
 
             <div class="flex flex-col gap-4">
                 {
+                    // Un tableau contenant les questions et les réponses
                     [
                         {
                             q: "Le festival est-il vraiment gratuit ?",
@@ -256,6 +259,7 @@ import Layout from "../layouts/Layout.astro";
                             a: "Oui, toutes les scènes sont accessibles PMR. Des zones de stationnement réservées sont disponibles.",
                         },
                     ].map((faq) => (
+                        // La balise <details> gère l'ouverture/fermeture sans JavaScript
                         <details class="group bg-white rounded-[15px] shadow-sm border border-gray-100 overflow-hidden transition-all">
                             <summary class="flex justify-between items-center font-bold text-lg text-[#111] p-6 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
                                 <span>{faq.q}</span>
@@ -265,6 +269,7 @@ import Layout from "../layouts/Layout.astro";
                                     class="w-5 h-5 transition-transform duration-300 group-open:rotate-180"
                                 />
                             </summary>
+
                             <div class="px-6 pb-6 text-[#555] leading-relaxed">
                                 <p>{faq.a}</p>
                             </div>

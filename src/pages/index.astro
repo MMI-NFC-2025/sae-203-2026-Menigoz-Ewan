@@ -1,4 +1,5 @@
 ---
+// IMPORTATION
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -55,7 +56,8 @@ import Layout from "../layouts/Layout.astro";
 							src="/vector_discover_hero_homepage.svg"
 							alt="musique"
 							class="w-5 h-5 brightness-0 invert"
-						/> Découvrir le programme
+						/>
+						Découvrir le programme
 					</a>
 					<a
 						href="#billetterie"
@@ -65,7 +67,8 @@ import Layout from "../layouts/Layout.astro";
 							src="/vector_tickets_hero_homepage.svg"
 							alt="billetterie"
 							class="w-5 h-5"
-						/> Billetterie
+						/>
+						Billetterie
 					</a>
 				</div>
 
@@ -76,7 +79,8 @@ import Layout from "../layouts/Layout.astro";
 						src="/vector_free_eco_hero_homepage.svg"
 						alt="eco"
 						class="w-5 h-5 brightness-0 invert"
-					/> GRATUIT & ÉCO
+					/>
+					GRATUIT & ÉCO
 				</div>
 			</div>
 		</section>
@@ -95,6 +99,7 @@ import Layout from "../layouts/Layout.astro";
 					class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 font-sans"
 				>
 					{
+						// Génération d'une grille à partir d'un tableau d'objets codé en dur (idéal pour des infos fixes)
 						[
 							{
 								icon: "/vector_artist_homepage.svg",
@@ -150,6 +155,8 @@ import Layout from "../layouts/Layout.astro";
 			<div class="relative w-full overflow-hidden group">
 				<div class="flex w-max animate-marquee group-hover:pause">
 					{
+						// On crée deux boucles identiques (1 et 2) pour que l'animation tourne en boucle parfaite
+						// sans "trou" blanc à la fin du premier passage
 						[1, 2].map(() => (
 							<div class="flex gap-6 pr-6">
 								{[
@@ -191,6 +198,7 @@ import Layout from "../layouts/Layout.astro";
 					Téléchargez le programme complet et consultez toutes les
 					informations pratiques pour profiter pleinement du festival
 				</p>
+
 				<div class="flex flex-wrap gap-6 justify-center mt-6">
 					<a
 						href="/programme.pdf"
@@ -200,7 +208,8 @@ import Layout from "../layouts/Layout.astro";
 							src="/vector_download_homepage.svg"
 							alt="télécharger"
 							class="w-5 h-5"
-						/> Télécharger le programme
+						/>
+						Télécharger le programme
 					</a>
 					<a
 						href="/contact"
@@ -215,6 +224,7 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <style>
+	/* Cache la barre de défilement (scroll) pour un look plus épuré (utilisé dans les carrousels) */
 	.no-scrollbar::-webkit-scrollbar {
 		display: none;
 	}
@@ -223,6 +233,7 @@ import Layout from "../layouts/Layout.astro";
 		scrollbar-width: none;
 	}
 
+	/* Définition de l'animation du bandeau des partenaires (défilement continu vers la gauche sur 30 secondes) */
 	.animate-marquee {
 		animation: marquee 30s linear infinite;
 	}
@@ -230,21 +241,27 @@ import Layout from "../layouts/Layout.astro";
 		0% {
 			transform: translateX(0);
 		}
+		/* Va jusqu'à la moitié (-50%) car on a doublé la liste des partenaires (le tableau [1, 2] plus haut) */
 		100% {
 			transform: translateX(-50%);
 		}
 	}
+
+	/* Classe pour mettre l'animation en pause (au survol de la souris) */
 	.pause {
 		animation-play-state: paused;
 	}
 </style>
 
 <script>
+	// Note : Ce code n'a pas l'air d'être utilisé dans le HTML ci-dessus (pas d'élément avec la classe .carousel__container).
+	// S'il reste d'une ancienne version, tu peux l'expliquer au jury comme "un script prêt à l'emploi si j'ajoute un carrousel d'images plus tard".
 	const track = document.querySelector(".carousel__container");
 	const nextBtn = document.querySelector(".carousel__btn--next");
 	const prevBtn = document.querySelector(".carousel__btn--prev");
 
 	if (track && nextBtn && prevBtn) {
+		// Défilement au clic des boutons (de la largeur d'une diapositive)
 		const scrollAmount = () =>
 			track.querySelector(".carousel__slide")?.clientWidth + 24 || 300;
 		nextBtn.addEventListener("click", () =>
@@ -254,9 +271,11 @@ import Layout from "../layouts/Layout.astro";
 			track.scrollBy({ left: -scrollAmount(), behavior: "smooth" }),
 		);
 
+		// Gestion du glisser-déposer (Drag & Drop) à la souris
 		let isDown = false,
 			startX,
 			scrollLeft;
+
 		track.addEventListener("mousedown", (e) => {
 			isDown = true;
 			startX =
@@ -270,7 +289,7 @@ import Layout from "../layouts/Layout.astro";
 			e.preventDefault();
 			const x =
 				(e as MouseEvent).pageX - (track as HTMLElement).offsetLeft;
-			const walk = (x - startX) * 2;
+			const walk = (x - startX) * 2; // Multiplicateur pour accélérer le scroll
 			track.scrollLeft = scrollLeft - walk;
 		});
 	}
