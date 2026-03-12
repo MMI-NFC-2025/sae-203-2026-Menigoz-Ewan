@@ -264,7 +264,7 @@ const formatteDate = (dateString) => {
                                         <img
                                             src={
                                                 artiste.image_principale
-                                                    ? `http://127.0.0.1:8090/api/files/${artiste.collectionId}/${artiste.id}/${artiste.image_principale}`
+                                                    ? `${baseUrl}/api/files/${artiste.collectionId}/${artiste.id}/${artiste.image_principale}`
                                                     : "/hero_artist.avif"
                                             }
                                             alt={artiste.nom}
