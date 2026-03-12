@@ -5,8 +5,7 @@ import PocketBase from "pocketbase";
 
 // 1. CONNEXION À POCKETBASE
 // (Rappel : à modifier par l'URL de ton VPS pour la prod)
-const pb = new PocketBase("http://127.0.0.1:8090");
-
+const pb = new PocketBase("https://lafanfacomtoise.menigoz.optimiseus.fr");
 // 2. REQUÊTE N°1 : RÉCUPÉRER LES SCÈNES
 // On récupère toutes les scènes, triées par ordre de création
 const scenes = await pb.collection("scenes").getFullList({

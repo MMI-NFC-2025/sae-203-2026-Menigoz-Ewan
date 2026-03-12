@@ -5,8 +5,7 @@ import PocketBase from "pocketbase";
 
 // 1. CONNEXION ET REQUÊTE POCKETBASE
 // Pense à modifier cette URL avec celle de ton VPS pour la mise en production
-const pb = new PocketBase("http://127.0.0.1:8090");
-
+const pb = new PocketBase("https://lafanfacomtoise.menigoz.optimiseus.fr");
 // Récupération de tous les artistes triés par date avec les infos de la scène associée
 const records = await pb.collection("artistes").getFullList({
     sort: "date_passage",
