@@ -139,7 +139,7 @@ async function testAddOrUpdate() {
 
 // Décommenter pour tester les fonctions
 
-// testArtistesParDate();
+testArtistesParDate();
 // testScenesParNom();
 // testArtistesAlphabetique();
 // testArtisteById();
