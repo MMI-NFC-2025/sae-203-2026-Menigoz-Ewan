@@ -1,45 +1,31 @@
 ---
-// IMPORTATIONS
+// 1. IMPORTATIONS
 import Layout from "../../layouts/Layout.astro";
-import PocketBase from "pocketbase";
+import {
+    getSceneById,
+    getArtistesBySceneId,
+} from "../../../backend/backend.mjs";
 
-// 1. GÉNÉRATION DES ROUTES DYNAMIQUES
-// Création d'une URL unique pour chaque scène existante
-export async function getStaticPaths() {
-    const pb = new PocketBase("http://127.0.0.1:8090");
+// 2. RÉCUPÉRATION DE L'ID ET DE LA SCÈNE
+const { id } = Astro.params;
+const scene = await getSceneById(id);
 
-    // Récupération de toutes les scènes de la base de données
-    const records = await pb.collection("scenes").getFullList();
-
-    // Pour chaque scène trouvée, on crée une route avec son ID
-    // et on prépare les données (props) associées
-    return records.map((record) => ({
-        params: { id: record.id },
-        props: { scene: record },
-    }));
+// Sécurité : si on tape un mauvais ID dans l'URL, on redirige vers la liste
+if (!scene) {
+    return Astro.redirect("/scenes");
 }
 
-// 2. RÉCUPÉRATION DES DONNÉES DE LA SCÈNE
-const { scene } = Astro.props;
-
-// 3. SECONDE REQUÊTE : RÉCUPÉRER LES ARTISTES DE CETTE SCÈNE
-const pb = new PocketBase("http://127.0.0.1:8090");
-
-// Filtrage pour ne récupérer QUE les artistes liés à l'ID de la scène actuelle
-// On trie également par date de passage croissante
-const artistes = await pb.collection("artistes").getFullList({
-    filter: `scene_id = "${scene.id}"`,
-    sort: "+date_passage",
-});
+// 3. RÉCUPÉRATION DES ARTISTES DE CETTE SCÈNE
+// On utilise ta fonction du backend qui fait déjà le filtre !
+const artistes = await getArtistesBySceneId(id);
 
 // 4. GESTION DE L'IMAGE DE LA SCÈNE
-// Lien dynamique vers l'image PocketBase, ou image par défaut si elle est absente
+const baseUrl = "https://lafanfacomtoise.menigoz.optimiseus.fr"; // L'URL de ton VPS
 const imageUrl = scene.image
-    ? `http://127.0.0.1:8090/api/files/${scene.collectionId}/${scene.id}/${scene.image}`
+    ? `${baseUrl}/api/files/${scene.collectionId}/${scene.id}/${scene.image}`
     : "/assets/images/hero-du-site.avif";
 
 // 5. FONCTION OUTIL : FORMATAGE DES DATES
-// Transforme la date brute en texte lisible (ex: "15 juillet 2026 à 20:30")
 const formatteDate = (dateString) => {
     const dateObj = new Date(dateString);
     const formatterJour = new Intl.DateTimeFormat("fr-FR", {

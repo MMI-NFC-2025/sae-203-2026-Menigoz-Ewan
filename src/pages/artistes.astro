@@ -1,19 +1,9 @@
 ---
-// IMPORTATIONS
 import Layout from "../layouts/Layout.astro";
-import PocketBase from "pocketbase";
+import { getArtistesByDate } from "../../backend/backend.mjs";
 
-// 1. CONNEXION ET REQUÊTE POCKETBASE
-// Remplace 127.0.0.1 par l'URL de ton VPS quand tu seras en production !
-const pb = new PocketBase("http://127.0.0.1:8090");
+const records = await getArtistesByDate();
 
-// On récupère TOUS les artistes, classés par date, avec les infos de leur scène (expand)
-const records = await pb.collection("artistes").getFullList({
-    sort: "date_passage",
-    expand: "scene_id",
-});
-
-// 2. CONFIGURATION DU FORMAT DE DATE
 const formatterDate = new Intl.DateTimeFormat("fr-FR", {
     day: "numeric",
     month: "long",
@@ -22,38 +12,36 @@ const formatterDate = new Intl.DateTimeFormat("fr-FR", {
     minute: "2-digit",
 });
 
-// 3. FONCTION DE COULEUR DES BADGES SELON LE GENRE MUSICAL
 const getColorByGenre = (genre: string | string[]) => {
     const g = String(genre || "").toLowerCase();
 
-    if (g.includes("jazz")) return "bg-[var(--color-secondary)] text-black"; // Jaune
-    if (g.includes("fanfare")) return "bg-[var(--color-primary)] text-white"; // Orange
-    return "bg-[var(--color-accent)] text-white"; // Vert par défaut
+    if (g.includes("jazz")) return "bg-[var(--color-secondary)] text-black";
+    if (g.includes("fanfare")) return "bg-[var(--color-primary)] text-white";
+    return "bg-[var(--color-accent)] text-white";
 };
 
-// 4. NETTOYAGE ET PRÉPARATION DES DONNÉES
-// La fonction .map() prend le tableau brut (records) venant de PocketBase
-// et le transforme en un nouveau tableau (artistes) plus facile à utiliser dans le HTML
 const artistes = records.map((record) => {
-    // Formatage de la date ("15 juillet 2026 à 20:30")
-    const dateObj = new Date(record.date_passage);
-    const dateFormatee = formatterDate.format(dateObj).replace(",", " à");
+    let dateFormatee = "Date à confirmer";
+    let timeStamp = 0;
 
-    // Gestion du genre (tableau ou chaîne simple)
+    if (record.date_passage) {
+        const dateObj = new Date(record.date_passage);
+        dateFormatee = formatterDate.format(dateObj).replace(",", " à");
+        timeStamp = dateObj.getTime();
+    }
+
     const genreAffiche = Array.isArray(record.genre)
         ? record.genre.join(", ")
         : record.genre || "Non défini";
 
-    // Gestion de l'image (si absente, image par défaut)
     const imageUrl = record.image_principale
-        ? `http://127.0.0.1:8090/api/files/${record.collectionId}/${record.id}/${record.image_principale}`
+        ? `https://lafanfacomtoise.menigoz.optimiseus.fr/api/files/${record.collectionId}/${record.id}/${record.image_principale}`
         : "/lazy_birds_artist.avif";
 
-    // Ce qu'on retourne (le "colis" final) pour chaque artiste
     return {
         id: record.id,
         nom: record.nom,
-        dateObj: dateObj.getTime(), // Chiffre pur pour faciliter le tri par date en JS
+        dateObj: timeStamp,
         dateText: dateFormatee,
         scene: record.expand?.scene_id?.nom || "Scène à confirmer",
         genre: genreAffiche,

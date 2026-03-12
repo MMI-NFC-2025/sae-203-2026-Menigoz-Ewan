@@ -1,6 +1,7 @@
 import PocketBase from 'pocketbase';
 
 export const pb = new PocketBase('https://lafanfacomtoise.menigoz.optimiseus.fr');
+pb.autoCancellation(false);
 // Partie 2
 export async function getArtistesByDate() {
     return await pb.collection('artistes').getFullList({
